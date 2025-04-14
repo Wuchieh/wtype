@@ -50,6 +50,20 @@ func (s *SafeCache[T]) Use(f func(T) T) {
 	s.cache.Set(f(s.cache.Get()))
 }
 
+// Use2 uses the data of the cache.
+//
+//	If the data is not set, the function will be called and the result will be set.
+func (s *SafeCache[T]) Use2(f func(T) (T, error)) error {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+	if nd, err := f(s.cache.Get()); err != nil {
+		return err
+	} else {
+		s.cache.Set(nd)
+	}
+	return nil
+}
+
 // NewSafeCache creates a new safe cache.
 func NewSafeCache[T any](d time.Duration, data ...T) *SafeCache[T] {
 	c := NewCache(d, data...)
