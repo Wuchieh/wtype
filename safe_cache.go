@@ -41,6 +41,15 @@ func (s *SafeCache[T]) Get() T {
 	return s.cache.Get()
 }
 
+// Use uses the data of the cache.
+//
+//	The data will be updated after the function is called.
+func (s *SafeCache[T]) Use(f func(T) T) {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+	s.cache.Set(f(s.cache.Get()))
+}
+
 // NewSafeCache creates a new safe cache.
 func NewSafeCache[T any](d time.Duration, data ...T) *SafeCache[T] {
 	c := NewCache(d, data...)
