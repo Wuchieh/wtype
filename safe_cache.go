@@ -10,6 +10,11 @@ type SafeCache[T any] struct {
 	mutex sync.RWMutex
 }
 
+// ResetTimer resets the timer of the cache.
+func (s *SafeCache[T]) ResetTimer() {
+	s.cache.ResetTimer()
+}
+
 // SetDuration sets the duration of the cache.
 func (s *SafeCache[T]) SetDuration(duration time.Duration) {
 	s.cache.SetDuration(duration)

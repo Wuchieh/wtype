@@ -27,6 +27,11 @@ func (c *Cache[T]) resetData() {
 	c.data = *new(T)
 }
 
+// ResetTimer resets the timer of the cache.
+func (c *Cache[T]) ResetTimer() {
+	c.setTimer()
+}
+
 // SetDuration sets the duration of the cache.
 func (c *Cache[T]) SetDuration(d time.Duration) {
 	c.d = d
