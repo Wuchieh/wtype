@@ -10,6 +10,13 @@ type SafeCache[T any] struct {
 	mutex sync.RWMutex
 }
 
+// StopTimer stops the timer of the cache.
+//
+//	The data will be retained permanently.
+func (s *SafeCache[T]) StopTimer() {
+	s.cache.StopTimer()
+}
+
 // ResetTimer resets the timer of the cache.
 func (s *SafeCache[T]) ResetTimer() {
 	s.cache.ResetTimer()

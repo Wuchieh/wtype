@@ -22,6 +22,15 @@ func (c *Cache[T]) setTimer() {
 	c.t = time.AfterFunc(d, c.resetData)
 }
 
+// StopTimer stops the timer of the cache.
+//
+//	The data will be retained permanently.
+func (c *Cache[T]) StopTimer() {
+	if c.t != nil {
+		c.t.Stop()
+	}
+}
+
 // resetData resets the data of the cache.
 func (c *Cache[T]) resetData() {
 	c.data = *new(T)

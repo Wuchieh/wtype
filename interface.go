@@ -7,4 +7,5 @@ type ICache[T any] interface {
 	Get() T
 	SetDuration(time.Duration)
 	ResetTimer()
+	StopTimer()
 }
