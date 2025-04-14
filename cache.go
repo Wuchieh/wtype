@@ -57,7 +57,8 @@ func (c *Cache[T]) Get() T {
 }
 
 // NewCache creates a new cache.
-// If d is 0, the cache will never expire.
+//
+//	If d is 0, the cache will never expire.
 func NewCache[T any](d time.Duration, data ...T) *Cache[T] {
 	c := &Cache[T]{}
 	c.resetData()
