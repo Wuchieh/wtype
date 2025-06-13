@@ -10,20 +10,23 @@ import (
 type CustomCache[T any] struct {
 	duration time.Duration
 
-	setFunc     func(T)
+	setFunc     func(T, time.Duration)
 	getFunc     func() T
 	setDuration func(duration time.Duration)
-	resetTimer  func()
+	resetTimer  func(time.Duration)
 	stopTimer   func()
 }
 
 func NewCustomCache[T any](
-	setFunc func(T),
+	duration time.Duration,
+	setFunc func(T, time.Duration),
 	getFunc func() T,
 	setDuration func(duration time.Duration),
-	resetTimer func(),
-	stopTimer func()) *CustomCache[T] {
+	resetTimer func(time.Duration),
+	stopTimer func(),
+) *CustomCache[T] {
 	return &CustomCache[T]{
+		duration:    duration,
 		setFunc:     setFunc,
 		getFunc:     getFunc,
 		setDuration: setDuration,
@@ -33,21 +36,36 @@ func NewCustomCache[T any](
 }
 
 func (c *CustomCache[T]) Set(t T) {
-	c.setFunc(t)
+	if c.setFunc != nil {
+		return
+	}
+	c.setFunc(t, c.duration)
 }
 
 func (c *CustomCache[T]) Get() T {
+	if c.getFunc != nil {
+		return *new(T)
+	}
 	return c.getFunc()
 }
 
 func (c *CustomCache[T]) SetDuration(duration time.Duration) {
+	if c.setDuration == nil {
+		return
+	}
 	c.setDuration(duration)
 }
 
 func (c *CustomCache[T]) ResetTimer() {
-	c.resetTimer()
+	if c.resetTimer == nil {
+		return
+	}
+	c.resetTimer(c.duration)
 }
 
 func (c *CustomCache[T]) StopTimer() {
+	if c.stopTimer == nil {
+		return
+	}
 	c.stopTimer()
 }
