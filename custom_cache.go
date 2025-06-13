@@ -36,21 +36,21 @@ func NewCustomCache[T any](
 }
 
 func (c *CustomCache[T]) Set(t T) {
-	if c.setFunc != nil {
+	if c.setFunc == nil {
 		return
 	}
 	c.setFunc(t, c.duration)
 }
 
 func (c *CustomCache[T]) Get() T {
-	if c.getFunc != nil {
+	if c.getFunc == nil {
 		return *new(T)
 	}
 	return c.getFunc()
 }
 
 func (c *CustomCache[T]) SetDuration(duration time.Duration) {
-	if c.beforeSetDuration != nil {
+	if c.beforeSetDuration == nil {
 		duration = c.beforeSetDuration(duration)
 	}
 	c.duration = duration
