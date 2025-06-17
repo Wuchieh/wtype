@@ -1,6 +1,9 @@
 package wtype
 
-import "testing"
+import (
+	"reflect"
+	"testing"
+)
 
 func TestGorm(t *testing.T) {
 	var uintSlice GormSlice[uint]
@@ -16,4 +19,8 @@ func TestGorm(t *testing.T) {
 	uintSlice.Scan([]byte("[10,20,30]"))
 
 	t.Log(uintSlice)
+
+	slices := uintSlice.ToSlice()
+
+	t.Log(reflect.TypeOf(uintSlice), reflect.TypeOf(slices))
 }

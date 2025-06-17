@@ -11,6 +11,13 @@ import (
 
 type GormSlice[T any] []T
 
+// ToSlice convert to slice
+//
+//	use for gorm where
+func (g GormSlice[T]) ToSlice() []T {
+	return g
+}
+
 func (g *GormSlice[T]) Scan(value any) error {
 	bytes, ok := value.([]byte)
 	if !ok {
