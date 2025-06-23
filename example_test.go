@@ -1,12 +1,13 @@
-package wtype
+package wtype_test
 
 import (
 	"fmt"
+	"github.com/wuchieh/wtype"
 	"time"
 )
 
 func ExampleCache_ResetTimer() {
-	c := NewCache[int](time.Second)
+	c := wtype.NewCache[int](time.Second)
 	c.Set(1)
 	time.Sleep(time.Millisecond)
 	c.ResetTimer()
