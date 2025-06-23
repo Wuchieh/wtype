@@ -15,4 +15,7 @@ type ISet[T comparable] interface {
 	Get() []T
 	Len() int
 	Remove(T)
+	Clear()
+	Range(func(T) bool)
+	Contains(T) bool
 }
