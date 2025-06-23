@@ -9,3 +9,10 @@ type ICache[T any] interface {
 	ResetTimer()
 	StopTimer()
 }
+
+type ISet[T comparable] interface {
+	Add(T)
+	Get() []T
+	Len() int
+	Remove(T)
+}
