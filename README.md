@@ -4,17 +4,17 @@
 
 ### Cache
 
-- [ ] add example
+- [x] add example
 - [ ] add test
 
 ### SafeCache
 
-- [ ] add example
+- [x] add example
 - [ ] add test
 
 ### Set
 
-- [ ] add example
+- [x] add example
 - [x] add test
 
 ### SafeSet
