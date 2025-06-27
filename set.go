@@ -18,7 +18,8 @@ func (s *Set[T]) Add(data T) {
 }
 
 // Get returns all elements in the set as a slice.
-// The order of elements is not guaranteed.
+//
+//	The order of elements is not guaranteed.
 func (s *Set[T]) Get() []T {
 	ret := make([]T, 0, len(s.m))
 	for k := range s.m {
@@ -49,7 +50,8 @@ func (s *Set[T]) Clear() {
 }
 
 // Range iterates over the set and calls f for each element.
-// If f returns false, the iteration stops.
+//
+//	If f returns false, the iteration stops.
 func (s *Set[T]) Range(f func(T) bool) {
 	for k := range s.m {
 		if !f(k) {
