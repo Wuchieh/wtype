@@ -1,0 +1,162 @@
+package wtype_test
+
+import (
+	"github.com/wuchieh/wtype"
+	"strings"
+	"testing"
+)
+
+func TestStringSlice(t *testing.T) {
+	a := "abcdefg"
+
+	if wtype.StringSlice(a, -1) != "g" {
+		t.Error("StringSlice error")
+	}
+
+	if wtype.StringSlice(a, -2) != "fg" {
+		t.Error("StringSlice error")
+	}
+
+	if wtype.StringSlice(a, -3) != "efg" {
+		t.Error("StringSlice error")
+	}
+
+	if wtype.StringSlice(a, -4) != "defg" {
+		t.Error("StringSlice error")
+	}
+
+	if wtype.StringSlice(a, -5) != "cdefg" {
+		t.Error("StringSlice error")
+	}
+
+	if wtype.StringSlice(a, -6) != "bcdefg" {
+		t.Error("StringSlice error")
+	}
+
+	if wtype.StringSlice(a, -7) != "abcdefg" {
+		t.Error("StringSlice error")
+	}
+
+	if wtype.StringSlice(a, 0) != a {
+		t.Error("StringSlice error")
+	}
+
+	if wtype.StringSlice(a, 1) != "bcdefg" {
+		t.Error("StringSlice error")
+	}
+
+	if wtype.StringSlice(a, 2) != "cdefg" {
+		t.Error("StringSlice error")
+	}
+
+	if wtype.StringSlice(a, 3) != "defg" {
+		t.Error("StringSlice error")
+	}
+
+	if wtype.StringSlice(a, 4) != "efg" {
+		t.Error("StringSlice error")
+	}
+
+	if wtype.StringSlice(a, 5) != "fg" {
+		t.Error("StringSlice error")
+	}
+
+	if wtype.StringSlice(a, 6) != "g" {
+		t.Error("StringSlice error")
+	}
+
+	if wtype.StringSlice(a, 1, 3) != "bc" {
+		t.Error("StringSlice error")
+	}
+
+	if wtype.StringSlice(a, 1, 99) != "bcdefg" {
+		t.Error("StringSlice error")
+	}
+
+	if wtype.StringSlice(a, -2, -1) != "f" {
+		t.Error("StringSlice error")
+	}
+
+	if wtype.StringSlice(a, -2, 99) != "fg" {
+		t.Error("StringSlice error")
+	}
+}
+
+func TestStructStringTrim(t *testing.T) {
+	type user struct {
+		Name string
+		Next *user
+	}
+
+	/*	toJson := func(u *user) string {
+			b, _ := json.Marshal(u)
+			return string(b)
+		}
+	*/
+	u := &user{
+		Name: " Alice ",
+		Next: &user{
+			Name: " Bob ",
+			Next: &user{
+				Name: " Charlie ",
+				Next: &user{
+					Name: " Dave ",
+				},
+			},
+		},
+	}
+
+	wtype.StructStringTrim(&u)
+
+	tempU := u
+
+	for tempU != nil {
+		if strings.Contains(tempU.Name, " ") {
+			t.Error("StructStringTrim error")
+		}
+
+		tempU = tempU.Next
+	}
+}
+
+func TestSliceToMap(t *testing.T) {
+	type user struct {
+		ID   int
+		Name string
+		Age  int
+	}
+
+	users := []user{
+		{
+			ID:   1,
+			Name: "Alice",
+			Age:  35,
+		},
+		{
+			ID:   2,
+			Name: "Bob",
+			Age:  28,
+		},
+		{
+			ID:   3,
+			Name: "Charlie",
+			Age:  14,
+		},
+	}
+
+	m := wtype.SliceToMap(users, func(i int, u user) int {
+		return u.ID
+	})
+
+	if m[1].Name != "Alice" {
+		t.Error("SliceToMap error")
+	}
+
+	if m[2].Name != "Bob" {
+		t.Error("SliceToMap error")
+	}
+
+	if m[3].Name != "Charlie" {
+		t.Error("SliceToMap error")
+	}
+}
