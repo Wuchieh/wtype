@@ -67,3 +67,39 @@ func SliceToMap[T any, K comparable](slice []T, getKey func(int, T) K) map[K]T {
 	}
 	return m
 }
+
+// StringSlice returns a substring of a string
+func StringSlice(s string, start int, end ...int) string {
+	runes := []rune(s)
+	length := len(runes)
+
+	if start < 0 {
+		start = length + start
+	}
+	if start < 0 {
+		start = 0
+	}
+	if start > length {
+		start = length
+	}
+
+	e := length
+	if len(end) > 0 {
+		e = end[0]
+		if e < 0 {
+			e = length + e
+		}
+		if e < 0 {
+			e = 0
+		}
+		if e > length {
+			e = length
+		}
+	}
+
+	if e <= start {
+		return ""
+	}
+
+	return string(runes[start:e])
+}
