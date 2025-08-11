@@ -80,6 +80,12 @@ func TestStringSlice(t *testing.T) {
 	if wtype.StringSlice(a, -2, 99) != "fg" {
 		t.Error("StringSlice error")
 	}
+
+	str := wtype.NewString("你好世界")
+
+	if str.Slice(1, 2).String() != "好" {
+		t.Error("StringSlice error")
+	}
 }
 
 func TestStructStringTrim(t *testing.T) {
