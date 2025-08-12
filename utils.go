@@ -103,3 +103,12 @@ func StringSlice(s string, start int, end ...int) string {
 
 	return string(runes[start:e])
 }
+
+// SliceConvert converts a slice of type T to a slice of type K
+func SliceConvert[T, K any](s []T, f func(T) K) []K {
+	ret := make([]K, 0, len(s))
+	for _, v := range s {
+		ret = append(ret, f(v))
+	}
+	return ret
+}
