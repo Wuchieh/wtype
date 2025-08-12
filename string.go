@@ -39,14 +39,16 @@ func (s *String) Slice(start int, end ...int) *String {
 	return NewString(StringSlice(s.String(), start, end...))
 }
 
-func (s *String) Split(sep ...string) []string {
+func (s *String) Split(sep ...string) []String {
 	se := ""
 
 	if len(sep) > 0 {
 		se = sep[0]
 	}
 
-	return strings.Split(s.String(), se)
+	return SliceConvert(strings.Split(s.String(), se), func(t string) String {
+		return *NewString(t)
+	})
 }
 
 func (s *String) Contains(substr string) bool {
