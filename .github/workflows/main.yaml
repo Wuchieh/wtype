@@ -5,7 +5,10 @@ on:
     branches:
       - main
     tags:
-      - 'v*'   # 只有 v 開頭的 tag 才會觸發 release，例如 v1.0.0
+      - 'v*'
+
+permissions:
+  contents: write
 
 jobs:
   test:
@@ -19,7 +22,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.23' # 可以改成你的 Go 版本
+          go-version: '1.23'
 
       - name: Run Tests
         run: go test ./... -v
