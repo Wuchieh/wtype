@@ -5,6 +5,11 @@ type Set[T comparable] struct {
 	m map[T]struct{}
 }
 
+// Values is an alias for Get.
+func (s *Set[T]) Values() []T {
+	return s.Get()
+}
+
 // NewSet creates a new empty Set.
 func NewSet[T comparable]() *Set[T] {
 	return &Set[T]{
