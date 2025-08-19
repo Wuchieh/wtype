@@ -112,3 +112,10 @@ func SliceConvert[T, K any](s []T, f func(T) K) []K {
 	}
 	return ret
 }
+
+// SlicePointConvert converts a slice of type *T to a slice of type K
+func SlicePointConvert[T any](s []T) []*T {
+	return SliceConvert(s, func(v T) *T {
+		return &v
+	})
+}
