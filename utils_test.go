@@ -1,9 +1,10 @@
 package wtype_test
 
 import (
-	"github.com/wuchieh/wtype"
 	"strings"
 	"testing"
+
+	"github.com/wuchieh/wtype"
 )
 
 func TestStringSlice(t *testing.T) {
@@ -164,5 +165,27 @@ func TestSliceToMap(t *testing.T) {
 
 	if m[3].Name != "Charlie" {
 		t.Error("SliceToMap error")
+	}
+}
+
+func TestSlicePointConvert(t *testing.T) {
+	slice := []string{"a", "b", "c", "d", "e", "f", "g", "h"}
+	slice2 := wtype.SliceUnPointConvert(wtype.SlicePointConvert(slice))
+
+	for i := 0; i < len(slice2); i++ {
+		if slice2[i] != slice[i] {
+			t.Error("SlicePointConvert error")
+		}
+	}
+}
+
+func TestSliceUnPointConvert(t *testing.T) {
+	slice := []string{"a", "b", "c", "d", "e", "f", "g", "h"}
+	slice2 := wtype.SliceUnPointConvert(wtype.SlicePointConvert(slice))
+
+	for i := 0; i < len(slice2); i++ {
+		if slice2[i] != slice[i] {
+			t.Error("SlicePointConvert error")
+		}
 	}
 }
