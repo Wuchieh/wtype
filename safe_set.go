@@ -8,6 +8,15 @@ type SafeSet[T comparable] struct {
 	s  Set[T]
 }
 
+// Values returns all elements in the set as a slice.
+//
+//	The order of elements is not guaranteed.
+func (s *SafeSet[T]) Values() []T {
+	s.mx.RLock()
+	defer s.mx.RUnlock()
+	return s.s.Values()
+}
+
 // NewSafeSet creates a new empty SafeSet.
 func NewSafeSet[T comparable]() *SafeSet[T] {
 	return &SafeSet[T]{

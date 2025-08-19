@@ -18,4 +18,5 @@ type ISet[T comparable] interface {
 	Clear()
 	Range(func(T) bool)
 	Contains(T) bool
+	Values() []T
 }
