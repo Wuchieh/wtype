@@ -119,3 +119,13 @@ func SlicePointConvert[T any](s []T) []*T {
 		return &v
 	})
 }
+
+// SliceUnPointConvert converts a slice of type *T to a slice of type K
+func SliceUnPointConvert[T any](s []*T) []T {
+	return SliceConvert(s, func(v *T) T {
+		if v == nil {
+			return *new(T)
+		}
+		return *v
+	})
+}
