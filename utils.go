@@ -19,10 +19,16 @@ func StructStringTrim(v any) {
 		rv = rv.Elem()
 	}
 
-	trimValue(rv)
+	trimValue(rv, make(map[reflect.Value]struct{}))
 }
 
-func trimValue(rv reflect.Value) {
+func trimValue(rv reflect.Value, record map[reflect.Value]struct{}) {
+	if _, ok := record[rv]; ok {
+		return
+	} else {
+		record[rv] = struct{}{}
+	}
+
 	switch rv.Kind() {
 	case reflect.Struct:
 		rt := rv.Type()
@@ -31,9 +37,9 @@ func trimValue(rv reflect.Value) {
 			fieldType := rt.Field(i)
 
 			if field.CanSet() {
-				trimValue(field)
+				trimValue(field, record)
 			} else if fieldType.Anonymous {
-				trimValue(field)
+				trimValue(field, record)
 			}
 		}
 	case reflect.Ptr:
@@ -44,11 +50,11 @@ func trimValue(rv reflect.Value) {
 		} else if !rv.IsNil() &&
 			rv.Elem().Kind() == reflect.Struct ||
 			rv.Elem().Kind() == reflect.Slice {
-			trimValue(rv.Elem())
+			trimValue(rv.Elem(), record)
 		}
 	case reflect.Slice, reflect.Array:
 		for i := 0; i < rv.Len(); i++ {
-			trimValue(rv.Index(i))
+			trimValue(rv.Index(i), record)
 		}
 	case reflect.String:
 		if rv.CanSet() {

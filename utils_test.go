@@ -124,6 +124,18 @@ func TestStructStringTrim(t *testing.T) {
 
 		tempU = tempU.Next
 	}
+
+	u2 := &user{
+		Name: " Alice ",
+	}
+
+	u2.Next = u2
+
+	wtype.StructStringTrim(&u2)
+
+	if u2 != u2.Next || u2.Next.Next.Name != "Alice" {
+		t.Error("StructStringTrim error")
+	}
 }
 
 func TestSliceToMap(t *testing.T) {
