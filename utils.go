@@ -16,6 +16,9 @@ type SharedChanResult[T any] struct {
 	Val T
 }
 
+// DoShared executes the given function fn associated with the provided key.
+// If multiple calls with the same key are made concurrently, fn will only be
+// executed once, and the result will be shared among all callers.
 func DoShared[T any](key string, fn func() (T, error)) (T, error) {
 	var result T
 	do, err, _ := shared.Do(key, func() (interface{}, error) {
@@ -34,6 +37,10 @@ func DoShared[T any](key string, fn func() (T, error)) (T, error) {
 	return result, nil
 }
 
+// DoSharedChan is the channel-based variant of DoShared.
+// It executes the given function fn associated with the provided key.
+// If multiple calls with the same key are made concurrently, fn will only be
+// executed once, and the result will be delivered through the returned channel.
 func DoSharedChan[T any](key string, fn func() (T, error)) <-chan SharedChanResult[T] {
 	doChan := shared.DoChan(key, func() (interface{}, error) {
 		t, err := fn()
@@ -57,6 +64,9 @@ func DoSharedChan[T any](key string, fn func() (T, error)) <-chan SharedChanResu
 	return result
 }
 
+// DoSharedForget removes the entry for the given key from the shared group,
+// allowing subsequent calls with the same key to re-execute the function fn
+// instead of receiving a shared result.
 func DoSharedForget(key string) {
 	shared.Forget(key)
 }
