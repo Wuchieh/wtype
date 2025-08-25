@@ -3,7 +3,63 @@ package wtype
 import (
 	"reflect"
 	"strings"
+
+	"golang.org/x/sync/singleflight"
 )
+
+var (
+	shared = singleflight.Group{}
+)
+
+type SharedChanResult[T any] struct {
+	singleflight.Result
+	Val T
+}
+
+func DoShared[T any](key string, fn func() (T, error)) (T, error) {
+	var result T
+	do, err, _ := shared.Do(key, func() (interface{}, error) {
+		t, err := fn()
+		if err != nil {
+			return nil, err
+		}
+		return t, nil
+	})
+
+	if err != nil {
+		return result, err
+	}
+
+	result = do.(T)
+	return result, nil
+}
+
+func DoSharedChan[T any](key string, fn func() (T, error)) <-chan SharedChanResult[T] {
+	doChan := shared.DoChan(key, func() (interface{}, error) {
+		t, err := fn()
+		if err != nil {
+			return nil, err
+		}
+		return t, nil
+	})
+
+	result := make(chan SharedChanResult[T])
+
+	go func() {
+		data := <-doChan
+
+		result <- SharedChanResult[T]{
+			Result: data,
+			Val:    data.Val.(T),
+		}
+	}()
+
+	return result
+}
+
+func DoSharedForget(key string) {
+	shared.Forget(key)
+}
 
 // StructStringTrim removes leading and trailing whitespace from a struct
 func StructStringTrim(v any) {

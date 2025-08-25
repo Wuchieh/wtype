@@ -2,7 +2,9 @@ package wtype_test
 
 import (
 	"strings"
+	"sync"
 	"testing"
+	"time"
 
 	"github.com/wuchieh/wtype"
 )
@@ -199,5 +201,128 @@ func TestSliceUnPointConvert(t *testing.T) {
 		if slice2[i] != slice[i] {
 			t.Error("SlicePointConvert error")
 		}
+	}
+}
+
+func TestDoShared(t *testing.T) {
+	type data struct {
+		do    int
+		start int
+		end   int
+	}
+	var result data
+	key := time.Now().String()
+	fn := func() int {
+		num, err := wtype.DoShared(key, func() (int, error) {
+			result.do++
+			time.Sleep(time.Second)
+			return 0, nil
+		})
+		if err != nil {
+			return 0
+		}
+		return num
+	}
+
+	var wg sync.WaitGroup
+	runTime := 10
+	wg.Add(runTime)
+	for i := 0; i < runTime; i++ {
+		go func() {
+			defer wg.Done()
+			result.start++
+			fn()
+			result.end++
+		}()
+	}
+
+	wg.Wait()
+
+	if result.do != 1 {
+		t.Error("do time error", result.do)
+	}
+
+	if result.start != runTime {
+		t.Error("start time error")
+	}
+
+	if result.end != runTime {
+		t.Error("end time error")
+	}
+}
+
+func TestDoSharedChan(t *testing.T) {
+	key := time.Now().String()
+
+	fn := func() <-chan wtype.SharedChanResult[int] {
+		return wtype.DoSharedChan(key, func() (int, error) {
+			time.Sleep(time.Second)
+			return 0, nil
+		})
+	}
+
+	var wg sync.WaitGroup
+	runTime := 10
+	wg.Add(runTime)
+	for i := 0; i < runTime; i++ {
+		go func() {
+			defer wg.Done()
+			result := <-fn()
+			if (result.Val + 1) != 1 {
+				t.Error("DoSharedChan error")
+			}
+		}()
+	}
+
+	wg.Done()
+}
+
+func TestDoSharedForget(t *testing.T) {
+	type data struct {
+		do    int
+		start int
+		end   int
+	}
+	var result data
+	key := time.Now().String()
+	fn := func() int {
+		num, err := wtype.DoShared(key, func() (int, error) {
+			result.do++
+			time.Sleep(time.Second)
+			return 0, nil
+		})
+		if err != nil {
+			return 0
+		}
+		return num
+	}
+
+	var wg sync.WaitGroup
+	runTime := 10
+	wg.Add(runTime)
+	for i := 0; i < runTime; i++ {
+		go func() {
+			defer wg.Done()
+			result.start++
+			wtype.DoSharedForget(key)
+			fn()
+			result.end++
+		}()
+
+		time.Sleep(time.Millisecond)
+	}
+
+	wg.Wait()
+
+	if result.do <= 1 {
+		t.Error("do time error", result.do)
+	}
+
+	if result.start != runTime {
+		t.Error("start time error")
+	}
+
+	if result.end != runTime {
+		t.Error("end time error")
 	}
 }
