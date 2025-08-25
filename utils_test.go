@@ -211,7 +211,7 @@ func TestDoShared(t *testing.T) {
 		end   int
 	}
 	var result data
-	key := time.Now().String()
+	key := time.Now().String() + "base"
 	fn := func() int {
 		num, err := wtype.DoShared(key, func() (int, error) {
 			result.do++
@@ -252,7 +252,7 @@ func TestDoShared(t *testing.T) {
 }
 
 func TestDoSharedChan(t *testing.T) {
-	key := time.Now().String()
+	key := time.Now().String() + "chan"
 
 	fn := func() <-chan wtype.SharedChanResult[int] {
 		return wtype.DoSharedChan(key, func() (int, error) {
@@ -274,7 +274,7 @@ func TestDoSharedChan(t *testing.T) {
 		}()
 	}
 
-	wg.Done()
+	wg.Wait()
 }
 
 func TestDoSharedForget(t *testing.T) {
@@ -284,7 +284,7 @@ func TestDoSharedForget(t *testing.T) {
 		end   int
 	}
 	var result data
-	key := time.Now().String()
+	key := time.Now().String() + "forget"
 	fn := func() int {
 		num, err := wtype.DoShared(key, func() (int, error) {
 			result.do++
