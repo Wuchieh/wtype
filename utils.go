@@ -201,3 +201,20 @@ func SliceUnPointConvert[T any](s []*T) []T {
 		return *v
 	})
 }
+
+func isZero(t any) bool {
+	va := reflect.ValueOf(t)
+	return va.IsZero()
+}
+
+// Fallback returns the first non-zero value from the given arguments.
+// If all values are zero, it returns the zero value of type T.
+func Fallback[T any](data ...T) T {
+	var zero T
+	for _, datum := range data {
+		if !isZero(datum) {
+			return datum
+		}
+	}
+	return zero
+}

@@ -1,6 +1,7 @@
 package wtype_test
 
 import (
+	"fmt"
 	"strings"
 	"sync"
 	"testing"
@@ -324,5 +325,14 @@ func TestDoSharedForget(t *testing.T) {
 
 	if result.end != runTime {
 		t.Error("end time error")
+	}
+}
+
+func TestFallback(t *testing.T) {
+	var data []string
+	data2 := make([]string, 0)
+
+	if fmt.Sprintf("%p", wtype.Fallback(data, data2)) != fmt.Sprintf("%p", data2) {
+		t.Error("Fallback error")
 	}
 }
