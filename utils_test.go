@@ -6,6 +6,7 @@ import (
 	"sync"
 	"testing"
 	"time"
+	"unsafe"
 
 	"github.com/wuchieh/wtype"
 )
@@ -335,4 +336,17 @@ func TestFallback(t *testing.T) {
 	if fmt.Sprintf("%p", wtype.Fallback(data, data2)) != fmt.Sprintf("%p", data2) {
 		t.Error("Fallback error")
 	}
+}
+
+func TestStack(t *testing.T) {
+	test := func() []byte {
+		return wtype.Stack(0)
+	}
+
+	f := func() {
+		stack := test()
+		fmt.Println(*(*string)(unsafe.Pointer(&stack)))
+	}
+
+	f()
 }
