@@ -357,6 +357,7 @@ func TestDoShared2(t *testing.T) {
 	runTime := 0
 	temp := func() string {
 		result, _ := wtype.DoShared2(func() (string, error) {
+			time.Sleep(time.Second)
 			runTime++
 			return strconv.Itoa(runTime), nil
 		})
@@ -367,8 +368,8 @@ func TestDoShared2(t *testing.T) {
 
 	for i := 0; i < 10; i++ {
 		wg.Go(func() {
-			if temp() != "1" {
-				t.Error("DoShared2 error")
+			if data := temp(); data != "1" {
+				t.Error("DoShared2 error: need:1 get:", data)
 			}
 		})
 	}
