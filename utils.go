@@ -187,6 +187,20 @@ func SliceConvert[T, K any](s []T, f func(T) K) []K {
 	return ret
 }
 
+// SliceConvert2 converts a slice of type T to a slice of type K
+//
+//	If the function returns false, the element will be skipped.
+func SliceConvert2[T, K any](s []T, f func(int, T) (K, bool)) []K {
+	result := make([]K, 0, len(s))
+	for i, v := range s {
+		data, ok := f(i, v)
+		if ok {
+			result = append(result, data)
+		}
+	}
+	return result
+}
+
 // SlicePointConvert converts a slice of type *T to a slice of type K
 func SlicePointConvert[T any](s []T) []*T {
 	return SliceConvert(s, func(v T) *T {
