@@ -13,6 +13,7 @@ import (
 // SqlJSON implements sql.Scanner interface
 type SqlJSON json.RawMessage
 
+// Scan implements sql.Scanner interface
 func (j *SqlJSON) Scan(value interface{}) error {
 	bytes, ok := value.([]byte)
 	if !ok {
@@ -25,6 +26,7 @@ func (j *SqlJSON) Scan(value interface{}) error {
 	return err
 }
 
+// Value implements driver.Valuer interface
 func (j SqlJSON) Value() (driver.Value, error) {
 	if len(j) == 0 {
 		return nil, nil
@@ -32,6 +34,7 @@ func (j SqlJSON) Value() (driver.Value, error) {
 	return json.RawMessage(j).MarshalJSON()
 }
 
+// GormDBDataType implements migrator.GormDataTypeInterface interface
 func (SqlJSON) GormDBDataType(db *gorm.DB, _ *schema.Field) string {
 	switch db.Dialector.Name() {
 	case "mysql", "sqlite":
@@ -40,4 +43,34 @@ func (SqlJSON) GormDBDataType(db *gorm.DB, _ *schema.Field) string {
 		return "JSONB"
 	}
 	return ""
+}
+
+type SqlJSON2[T any] struct {
+	SqlJSON
+}
+
+func (j SqlJSON2[T]) Unmarshal(a *T) error {
+	return json.Unmarshal(j.SqlJSON, a)
+}
+
+func (j *SqlJSON2[T]) Scan(value interface{}) error {
+	if value == nil {
+		j.SqlJSON = SqlJSON("null")
+		return nil
+	}
+
+	bytes, ok := value.([]byte)
+	if !ok {
+		return fmt.Errorf("cannot scan %T into SqlJSON2", value)
+	}
+
+	// 驗證 JSON 格式並檢查類型
+	var t T
+	if err := json.Unmarshal(bytes, &t); err != nil {
+		return fmt.Errorf("invalid JSON for type %T: %w", t, err)
+	}
+
+	// 只需要一次解析
+	j.SqlJSON = bytes
+	return nil
 }
