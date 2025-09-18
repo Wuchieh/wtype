@@ -39,6 +39,11 @@ func DoShared[T any](key string, fn func() (T, error)) (T, error) {
 	return result, nil
 }
 
+// DoShared2 executes the given function fn associated with the provided key.
+func DoShared2[T any](fn func() (T, error)) (T, error) {
+	return DoShared(fmt.Sprintf("%p", fn), fn)
+}
+
 // DoSharedChan is the channel-based variant of DoShared.
 // It executes the given function fn associated with the provided key.
 // If multiple calls with the same key are made concurrently, fn will only be
@@ -64,6 +69,11 @@ func DoSharedChan[T any](key string, fn func() (T, error)) <-chan SharedChanResu
 	}()
 
 	return result
+}
+
+// DoSharedChan2 is the channel-based variant of DoShared2.
+func DoSharedChan2[T any](fn func() (T, error)) <-chan SharedChanResult[T] {
+	return DoSharedChan(fmt.Sprintf("%p", fn), fn)
 }
 
 // DoSharedForget removes the entry for the given key from the shared group,
