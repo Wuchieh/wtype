@@ -260,7 +260,7 @@ func Stack(skip int) []byte {
 
 	for {
 		frame, more := frames.Next()
-		fmt.Fprintf(&buf, "%s\n\t%s:%d\n", frame.Function, frame.File, frame.Line)
+		_, _ = fmt.Fprintf(&buf, "%s\n\t%s:%d\n", frame.Function, frame.File, frame.Line)
 
 		if !more {
 			break
