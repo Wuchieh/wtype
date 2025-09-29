@@ -49,9 +49,11 @@ func (SqlJSON) GormDBDataType(db *gorm.DB, _ *schema.Field) string {
 	return ""
 }
 
+//revive:disable-next-line var-naming
 type SqlJSON2[T any] struct {
 	SqlJSON
 }
+type SQLJSON2[T any] = SqlJSON2[T]
 
 func (j SqlJSON2[T]) Unmarshal(a *T) error {
 	return json.Unmarshal(j.SqlJSON, a)
