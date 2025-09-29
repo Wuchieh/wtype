@@ -4,6 +4,8 @@
 
 ## TODO
 
+- [x] add lint
+
 ### Cache
 
 - [x] add example
@@ -18,8 +20,17 @@
 
 - [x] add example
 - [x] add test
+- [ ] json.Marshal
+- [ ] json.Unmarshal
 
 ### SafeSet
+
+- [ ] add example
+- [x] add test
+- [ ] json.Marshal
+- [ ] json.Unmarshal
+
+### Context
 
 - [ ] add example
 - [x] add test
@@ -27,8 +38,21 @@
 ### GormSlice
 
 - [ ] add example
+- [x] add test
+
+### SyncMap
+
+- [ ] add example
 - [ ] add test
+- [x] json.Marshal
+- [ ] json.Unmarshal
 
-### TODO
+### String & StringSlice
 
-- [ ] add lint
+- [x] add example
+- [x] add test
+
+### EventCenter
+
+- [x] add example
+- [x] add test
