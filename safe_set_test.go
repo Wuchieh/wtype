@@ -1,13 +1,15 @@
-package wtype
+package wtype_test
 
 import (
 	"sync"
 	"testing"
+
+	"github.com/wuchieh/wtype"
 )
 
 func TestSafeSet(t *testing.T) {
 	t.Run("BasicOperations", func(t *testing.T) {
-		s := NewSafeSet[int]()
+		s := wtype.NewSafeSet[int]()
 		if s.Len() != 0 {
 			t.Error("New set should be empty")
 		}
@@ -36,7 +38,7 @@ func TestSafeSet(t *testing.T) {
 	})
 
 	t.Run("Concurrency", func(t *testing.T) {
-		s := NewSafeSet[int]()
+		s := wtype.NewSafeSet[int]()
 		var wg sync.WaitGroup
 		const workers = 100
 		const itemsPerWorker = 100
@@ -89,7 +91,7 @@ func TestSafeSet(t *testing.T) {
 	})
 
 	t.Run("RangeConcurrency", func(t *testing.T) {
-		s := NewSafeSet[int]()
+		s := wtype.NewSafeSet[int]()
 		for i := 0; i < 100; i++ {
 			s.Add(i)
 		}

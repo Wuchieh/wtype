@@ -1,13 +1,15 @@
-package wtype
+package wtype_test
 
 import (
 	"sync"
 	"testing"
 	"time"
+
+	"github.com/wuchieh/wtype"
 )
 
 func TestSafeCache(t *testing.T) {
-	s := NewSafeCache(time.Second, 0)
+	s := wtype.NewSafeCache(time.Second, 0)
 
 	wg := sync.WaitGroup{}
 	wg.Add(1000)

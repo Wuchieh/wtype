@@ -1,12 +1,14 @@
-package wtype
+package wtype_test
 
 import (
 	"reflect"
 	"testing"
+
+	"github.com/wuchieh/wtype"
 )
 
 func TestGorm(t *testing.T) {
-	var uintSlice GormSlice[uint]
+	var uintSlice wtype.GormSlice[uint]
 
 	t.Log(uintSlice.Value())
 

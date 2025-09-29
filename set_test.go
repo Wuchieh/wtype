@@ -1,12 +1,14 @@
-package wtype
+package wtype_test
 
 import (
 	"testing"
+
+	"github.com/wuchieh/wtype"
 )
 
 func TestSet(t *testing.T) {
 	t.Run("BasicOperations", func(t *testing.T) {
-		s := NewSet[int]()
+		s := wtype.NewSet[int]()
 		if s.Len() != 0 {
 			t.Error("New set should be empty")
 		}
@@ -35,7 +37,7 @@ func TestSet(t *testing.T) {
 	})
 
 	t.Run("Duplicates", func(t *testing.T) {
-		s := NewSet[string]()
+		s := wtype.NewSet[string]()
 		s.Add("a")
 		s.Add("a")
 		s.Add("a")
@@ -46,7 +48,7 @@ func TestSet(t *testing.T) {
 	})
 
 	t.Run("Clear", func(t *testing.T) {
-		s := NewSet[float64]()
+		s := wtype.NewSet[float64]()
 		s.Add(1.1)
 		s.Add(2.2)
 		s.Clear()
@@ -57,7 +59,7 @@ func TestSet(t *testing.T) {
 	})
 
 	t.Run("Range", func(t *testing.T) {
-		s := NewSet[int]()
+		s := wtype.NewSet[int]()
 		s.Add(1)
 		s.Add(2)
 		s.Add(3)
