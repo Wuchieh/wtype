@@ -8,8 +8,8 @@
 
 ### Cache
 
-- [x] add example
-- [ ] add test
+- [ ] add example
+- [x] add test
 
 ### SafeCache
 
