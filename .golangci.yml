@@ -1,0 +1,61 @@
+version: "2"
+run:
+  tests: true
+linters:
+  enable:
+    - govet        # 官方 vet，檢查潛在 bug
+    - errcheck     # 錯誤未處理
+    - staticcheck  # 常見 bug，等同 GoLand 的很多內建檢查
+    - ineffassign  # 無效賦值
+    - unused       # 未使用的代碼
+    - gocritic     # 常見潛在錯誤檢查
+    - dupl
+    - gocyclo
+    - misspell
+    - nakedret
+    - prealloc
+    - revive
+    - unparam
+  settings:
+    dupl:
+      threshold: 100
+    gocyclo:
+      min-complexity: 15
+    misspell:
+      locale: US
+    nakedret:
+      max-func-lines: 20
+    revive:
+      rules:
+        - name: var-naming
+        - name: indent-error-flow
+        - name: error-return
+        - name: exported
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    rules:
+      - linters:
+          - staticcheck
+        text: should have comment or be unexported
+      - linters:
+          - revive
+        text: package comment should be of the form
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
+      - "_test\\.go$"
+formatters:
+  enable:
+    - gofumpt
+  exclusions:
+    generated: lax
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
