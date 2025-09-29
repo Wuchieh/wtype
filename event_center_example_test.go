@@ -29,6 +29,16 @@ func ExampleNewEventCenter() {
 	center.Off("run", run3)
 	fmt.Println("-----")
 	center.Emit("run")
+	fmt.Println("-----")
+
+	var onceRun func(data ...any)
+	onceRun = func(data ...any) {
+		fmt.Println("once")
+		center.Off("once", onceRun)
+	}
+	center.On("once", onceRun)
+	center.Emit("once")
+	center.Emit("once")
 
 	// Output:
 	// 1
@@ -39,4 +49,6 @@ func ExampleNewEventCenter() {
 	// 1
 	// 2
 	// 4
+	// -----
+	// once
 }
