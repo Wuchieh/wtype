@@ -14,11 +14,11 @@ func ExampleFileSize() {
 	fmt.Println(wtype.TB)
 	fmt.Println(wtype.TB + wtype.GB*100)
 
-	//output:
-	//1B
-	//1.0KB
-	//1.0MB
-	//1.0GB
-	//1.0TB
-	//1.1TB
+	// output:
+	// 1B
+	// 1.0KB
+	// 1.0MB
+	// 1.0GB
+	// 1.0TB
+	// 1.1TB
 }

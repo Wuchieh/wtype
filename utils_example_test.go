@@ -19,7 +19,7 @@ func ExampleFallback() {
 	fmt.Println(r4)
 	fmt.Println(r5)
 
-	//output:
+	// output:
 	// 5
 	// hello
 	// true
@@ -42,6 +42,6 @@ func ExampleSliceConvert2() {
 
 	fmt.Println(result)
 
-	//output:
+	// output:
 	// [0 2 4 6 8]
 }

@@ -2,8 +2,9 @@ package wtype_test
 
 import (
 	"fmt"
-	"github.com/wuchieh/wtype"
 	"testing"
+
+	"github.com/wuchieh/wtype"
 )
 
 func TestContext(t *testing.T) {

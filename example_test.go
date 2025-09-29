@@ -310,7 +310,6 @@ func ExampleSafeCache_Use2() {
 		}
 		return current + " processed", nil
 	})
-
 	if err != nil {
 		fmt.Printf("Error occurred: %v\n", err)
 		fmt.Printf("Data unchanged: %q\n", safeCache.Get())
