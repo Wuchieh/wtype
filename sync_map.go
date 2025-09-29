@@ -1,9 +1,21 @@
 package wtype
 
-import "sync"
+import (
+	"encoding/json"
+	"sync"
+)
 
 type SyncMap[K comparable, V any] struct {
 	m sync.Map
+}
+
+func (s SyncMap[K, V]) MarshalJSON() ([]byte, error) {
+	m := make(map[K]V)
+	s.m.Range(func(key, value any) bool {
+		m[key.(K)] = value.(V)
+		return true
+	})
+	return json.Marshal(m)
 }
 
 func (s *SyncMap[K, V]) Load(key K) (value V, ok bool) {

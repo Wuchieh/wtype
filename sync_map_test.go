@@ -1,8 +1,10 @@
 package wtype_test
 
 import (
-	"github.com/wuchieh/wtype"
+	"encoding/json"
 	"testing"
+
+	"github.com/wuchieh/wtype"
 )
 
 func TestSyncMap(t *testing.T) {
@@ -18,5 +20,11 @@ func TestSyncMap(t *testing.T) {
 		return true
 	})
 	actual, loaded := m.LoadOrStore("a", 1)
+	b, err := json.Marshal(m)
+	if err != nil {
+		t.Fatal("json.Marshal Error:", err)
+	} else {
+		t.Log(string(b))
+	}
 	t.Log(actual, loaded)
 }
