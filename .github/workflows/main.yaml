@@ -14,7 +14,6 @@ jobs:
   test:
     name: Run Go Tests
     runs-on: ubuntu-latest
-    # if: github.ref == 'refs/heads/main'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
