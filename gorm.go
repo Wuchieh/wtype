@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
 )
@@ -34,7 +35,7 @@ func (g GormSlice[T]) Value() (driver.Value, error) {
 }
 
 func (GormSlice[T]) GormDBDataType(db *gorm.DB, _ *schema.Field) string {
-	switch db.Dialector.Name() {
+	switch db.Name() {
 	case "mysql", "sqlite":
 		return "JSON"
 	case "postgres":

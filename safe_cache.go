@@ -56,11 +56,11 @@ func (s *SafeCache[T]) Use(f func(T) T) {
 func (s *SafeCache[T]) Use2(f func(T) (T, error)) error {
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
-	if nd, err := f(s.cache.Get()); err != nil {
+	nd, err := f(s.cache.Get())
+	if err != nil {
 		return err
-	} else {
-		s.cache.Set(nd)
 	}
+	s.cache.Set(nd)
 	return nil
 }
 

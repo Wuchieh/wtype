@@ -9,7 +9,7 @@ type SyncMap[K comparable, V any] struct {
 	m sync.Map
 }
 
-func (s SyncMap[K, V]) MarshalJSON() ([]byte, error) {
+func (s *SyncMap[K, V]) MarshalJSON() ([]byte, error) {
 	m := make(map[K]V)
 	s.m.Range(func(key, value any) bool {
 		m[key.(K)] = value.(V)
@@ -64,10 +64,7 @@ func (s *SyncMap[K, V]) CompareAndDelete(key K, old V) (deleted bool) {
 
 func (s *SyncMap[K, V]) Range(f func(key K, value V) (shouldContinue bool)) {
 	s.m.Range(func(key, value any) bool {
-		if !f(key.(K), value.(V)) {
-			return false
-		}
-		return true
+		return f(key.(K), value.(V))
 	})
 }
 

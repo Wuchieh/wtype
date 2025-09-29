@@ -9,9 +9,7 @@ import (
 	"golang.org/x/sync/singleflight"
 )
 
-var (
-	shared = singleflight.Group{}
-)
+var shared = singleflight.Group{}
 
 type SharedChanResult[T any] struct {
 	singleflight.Result
@@ -90,44 +88,61 @@ func StructStringTrim(v any) {
 	trimValue(rv, make(map[reflect.Value]struct{}))
 }
 
+func trimStruct(rv reflect.Value, record map[reflect.Value]struct{}) {
+	rt := rv.Type()
+	for i := 0; i < rv.NumField(); i++ {
+		field := rv.Field(i)
+		fieldType := rt.Field(i)
+
+		if field.CanSet() || fieldType.Anonymous {
+			trimValue(field, record)
+		}
+	}
+}
+
+func trimPointer(rv reflect.Value, record map[reflect.Value]struct{}) {
+	if rv.IsNil() {
+		return
+	}
+
+	elem := rv.Elem()
+	switch elem.Kind() {
+	case reflect.String:
+		if elem.CanSet() {
+			elem.SetString(strings.TrimSpace(elem.String()))
+		}
+	case reflect.Struct, reflect.Slice:
+		trimValue(elem, record)
+	}
+}
+
+func trimSliceOrArray(rv reflect.Value, record map[reflect.Value]struct{}) {
+	for i := 0; i < rv.Len(); i++ {
+		trimValue(rv.Index(i), record)
+	}
+}
+
+func trimString(rv reflect.Value) {
+	if rv.CanSet() {
+		rv.SetString(strings.TrimSpace(rv.String()))
+	}
+}
+
 func trimValue(rv reflect.Value, record map[reflect.Value]struct{}) {
 	if _, ok := record[rv]; ok {
 		return
-	} else {
-		record[rv] = struct{}{}
 	}
+	record[rv] = struct{}{}
 
 	switch rv.Kind() {
 	case reflect.Struct:
-		rt := rv.Type()
-		for i := 0; i < rv.NumField(); i++ {
-			field := rv.Field(i)
-			fieldType := rt.Field(i)
-
-			if field.CanSet() {
-				trimValue(field, record)
-			} else if fieldType.Anonymous {
-				trimValue(field, record)
-			}
-		}
+		trimStruct(rv, record)
 	case reflect.Ptr:
-		if !rv.IsNil() && rv.Elem().Kind() == reflect.String {
-			if rv.Elem().CanSet() {
-				rv.Elem().SetString(strings.TrimSpace(rv.Elem().String()))
-			}
-		} else if !rv.IsNil() &&
-			rv.Elem().Kind() == reflect.Struct ||
-			rv.Elem().Kind() == reflect.Slice {
-			trimValue(rv.Elem(), record)
-		}
+		trimPointer(rv, record)
 	case reflect.Slice, reflect.Array:
-		for i := 0; i < rv.Len(); i++ {
-			trimValue(rv.Index(i), record)
-		}
+		trimSliceOrArray(rv, record)
 	case reflect.String:
-		if rv.CanSet() {
-			rv.SetString(strings.TrimSpace(rv.String()))
-		}
+		trimString(rv)
 	default:
 		return
 	}

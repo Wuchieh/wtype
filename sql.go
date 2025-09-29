@@ -11,7 +11,11 @@ import (
 )
 
 // SqlJSON implements sql.Scanner interface
-type SqlJSON json.RawMessage
+type (
+	//revive:disable-next-line var-naming
+	SqlJSON json.RawMessage
+	SQLJSON = SqlJSON
+)
 
 func (j *SqlJSON) Scan(value interface{}) error {
 	bytes, ok := value.([]byte)
@@ -33,7 +37,7 @@ func (j SqlJSON) Value() (driver.Value, error) {
 }
 
 func (SqlJSON) GormDBDataType(db *gorm.DB, _ *schema.Field) string {
-	switch db.Dialector.Name() {
+	switch db.Name() {
 	case "mysql", "sqlite":
 		return "JSON"
 	case "postgres":

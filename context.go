@@ -55,9 +55,9 @@ func (c *Context[T]) Set(s string, a any) {
 	c.data[s] = a
 }
 
-func NewContext[T any](C T) Context[T] {
+func NewContext[T any](c T) Context[T] {
 	return Context[T]{
-		C: C,
+		C: c,
 	}
 }
 
