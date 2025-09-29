@@ -2,6 +2,7 @@ package wtype_test
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 	"sync"
 	"testing"
@@ -349,4 +350,69 @@ func TestStack(t *testing.T) {
 	}
 
 	f()
+}
+
+func TestDoShared2(t *testing.T) {
+	start := time.Now()
+	runTime := 0
+	temp := func() string {
+		result, _ := wtype.DoShared2(func() (string, error) {
+			time.Sleep(time.Second)
+			runTime++
+			return strconv.Itoa(runTime), nil
+		})
+		return result
+	}
+
+	var wg sync.WaitGroup
+
+	for i := 0; i < 10; i++ {
+		wg.Go(func() {
+			if data := temp(); data != "1" {
+				t.Error("DoShared2 error: need:1 get:", data)
+			}
+		})
+	}
+
+	wg.Wait()
+
+	if temp() != "2" {
+		t.Error("DoShared2 error")
+	}
+
+	t.Log(time.Since(start))
+}
+
+func TestDoShared2Chan(t *testing.T) {
+	start := time.Now()
+	runTime := 0
+	temp := func() string {
+		ch := wtype.DoSharedChan2(func() (string, error) {
+			runTime++
+			time.Sleep(time.Second)
+			return strconv.Itoa(runTime), nil
+		})
+
+		result := <-ch
+
+		return result.Val
+	}
+
+	var wg sync.WaitGroup
+
+	for i := 0; i < 10; i++ {
+		wg.Go(func() {
+			if temp() != "1" {
+				t.Error("DoShared2 error")
+			}
+		})
+	}
+
+	wg.Wait()
+
+	if temp() != "2" {
+		t.Error("DoShared2 error")
+	}
+
+	t.Log(time.Since(start))
 }

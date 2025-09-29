@@ -26,3 +26,22 @@ func ExampleFallback() {
 	// 0
 	// []
 }
+
+func ExampleSliceConvert2() {
+	var data []int
+	for i := 0; i < 10; i++ {
+		data = append(data, i)
+	}
+
+	result := wtype.SliceConvert2(data, func(i int, v int) (int, bool) {
+		if v%2 == 0 {
+			return v, true
+		}
+		return 0, false
+	})
+
+	fmt.Println(result)
+
+	//output:
+	// [0 2 4 6 8]
+}

@@ -37,6 +37,11 @@ func DoShared[T any](key string, fn func() (T, error)) (T, error) {
 	return result, nil
 }
 
+// DoShared2 executes the given function fn associated with the provided key.
+func DoShared2[T any](fn func() (T, error)) (T, error) {
+	return DoShared(fmt.Sprintf("%p", fn), fn)
+}
+
 // DoSharedChan is the channel-based variant of DoShared.
 // It executes the given function fn associated with the provided key.
 // If multiple calls with the same key are made concurrently, fn will only be
@@ -62,6 +67,11 @@ func DoSharedChan[T any](key string, fn func() (T, error)) <-chan SharedChanResu
 	}()
 
 	return result
+}
+
+// DoSharedChan2 is the channel-based variant of DoShared2.
+func DoSharedChan2[T any](fn func() (T, error)) <-chan SharedChanResult[T] {
+	return DoSharedChan(fmt.Sprintf("%p", fn), fn)
 }
 
 // DoSharedForget removes the entry for the given key from the shared group,
@@ -202,6 +212,20 @@ func SliceConvert[T, K any](s []T, f func(T) K) []K {
 	return ret
 }
 
+// SliceConvert2 converts a slice of type T to a slice of type K
+//
+//	If the function returns false, the element will be skipped.
+func SliceConvert2[T, K any](s []T, f func(int, T) (K, bool)) []K {
+	result := make([]K, 0, len(s))
+	for i, v := range s {
+		data, ok := f(i, v)
+		if ok {
+			result = append(result, data)
+		}
+	}
+	return result
+}
+
 // SlicePointConvert converts a slice of type *T to a slice of type K
 func SlicePointConvert[T any](s []T) []*T {
 	return SliceConvert(s, func(v T) *T {
@@ -251,7 +275,7 @@ func Stack(skip int) []byte {
 
 	for {
 		frame, more := frames.Next()
-		fmt.Fprintf(&buf, "%s\n\t%s:%d\n", frame.Function, frame.File, frame.Line)
+		_, _ = fmt.Fprintf(&buf, "%s\n\t%s:%d\n", frame.Function, frame.File, frame.Line)
 
 		if !more {
 			break
