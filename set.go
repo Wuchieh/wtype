@@ -10,13 +10,6 @@ func (s *Set[T]) Values() []T {
 	return s.Get()
 }
 
-// NewSet creates a new empty Set.
-func NewSet[T comparable]() *Set[T] {
-	return &Set[T]{
-		m: make(map[T]struct{}),
-	}
-}
-
 // Add adds an element to the set.
 func (s *Set[T]) Add(data T) {
 	s.m[data] = struct{}{}
@@ -63,4 +56,13 @@ func (s *Set[T]) Range(f func(T) bool) {
 			break
 		}
 	}
+}
+
+// NewSet creates a new empty Set.
+func NewSet[T comparable](val ...T) *Set[T] {
+	s := Set[T]{m: make(map[T]struct{})}
+	for _, t := range val {
+		s.Add(t)
+	}
+	return &s
 }
