@@ -17,13 +17,6 @@ func (s *SafeSet[T]) Values() []T {
 	return s.s.Values()
 }
 
-// NewSafeSet creates a new empty SafeSet.
-func NewSafeSet[T comparable]() *SafeSet[T] {
-	return &SafeSet[T]{
-		s: *NewSet[T](),
-	}
-}
-
 // Add adds an element to the set.
 func (s *SafeSet[T]) Add(data T) {
 	s.mx.Lock()
@@ -74,4 +67,15 @@ func (s *SafeSet[T]) Range(f func(T) bool) {
 	s.mx.RLock()
 	defer s.mx.RUnlock()
 	s.s.Range(f)
+}
+
+// NewSafeSet creates a new empty SafeSet.
+func NewSafeSet[T comparable](val ...T) *SafeSet[T] {
+	s := SafeSet[T]{
+		s: *NewSet[T](),
+	}
+	for _, t := range val {
+		s.Add(t)
+	}
+	return &s
 }
