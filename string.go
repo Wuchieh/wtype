@@ -56,6 +56,14 @@ func (s *String) Includes(substr string) bool {
 	return s.Contains(substr)
 }
 
+func (s *String) ToLower() *String {
+	return NewString(strings.ToLower(s.String()))
+}
+
+func (s *String) ToUpper() *String {
+	return NewString(strings.ToUpper(s.String()))
+}
+
 func NewString(s string) *String {
 	S := String(s)
 	return &S
