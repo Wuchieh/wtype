@@ -64,6 +64,10 @@ func (s *String) ToUpper() *String {
 	return NewString(strings.ToUpper(s.String()))
 }
 
+func (s *String) Len() int {
+	return StringLen(s.ToString())
+}
+
 func NewString(s string) *String {
 	S := String(s)
 	return &S
