@@ -416,3 +416,28 @@ func TestDoShared2Chan(t *testing.T) {
 
 	t.Log(time.Since(start))
 }
+
+func TestStringToByte(t *testing.T) {
+	s := "Hello World"
+	b := []byte(s)
+
+	cb := wtype.StringToByte(s)
+	if len(b) != len(cb) {
+		t.Fatal("StringToByte error")
+	}
+
+	for i, b2 := range cb {
+		if b[i] != b2 {
+			t.Fatal("StringToByte error")
+		}
+	}
+}
+
+func TestByteToString(t *testing.T) {
+	s := "Hello World"
+	b := []byte(s)
+	bs := wtype.ByteToString(b)
+	if s != bs {
+		t.Fatal("ByteToString error")
+	}
+}
