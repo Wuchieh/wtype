@@ -5,6 +5,8 @@ import (
 	"reflect"
 	"runtime"
 	"strings"
+	"unicode/utf8"
+	"unsafe"
 
 	"golang.org/x/sync/singleflight"
 )
@@ -201,6 +203,11 @@ func StringSlice(s string, start int, end ...int) string {
 	}
 
 	return string(runes[start:e])
+}
+
+// StringLen returns the length of a string in runes
+func StringLen(s string) int {
+	return utf8.RuneCount(*(*[]byte)(unsafe.Pointer(&s)))
 }
 
 // SliceConvert converts a slice of type T to a slice of type K
