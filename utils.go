@@ -207,7 +207,17 @@ func StringSlice(s string, start int, end ...int) string {
 
 // StringLen returns the length of a string in runes
 func StringLen(s string) int {
-	return utf8.RuneCount(*(*[]byte)(unsafe.Pointer(&s)))
+	return utf8.RuneCount(StringToByte(s))
+}
+
+// StringToByte returns the byte slice of a string
+func StringToByte(s string) []byte {
+	return *(*[]byte)(unsafe.Pointer(&s))
+}
+
+// ByteToString returns the string of a byte slice
+func ByteToString(b []byte) string {
+	return *(*string)(unsafe.Pointer(&b))
 }
 
 // SliceConvert converts a slice of type T to a slice of type K
