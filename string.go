@@ -68,7 +68,7 @@ func (s *String) Len() int {
 	return StringLen(s.ToString())
 }
 
-func NewString(s string) *String {
+func NewString[T ~string](s T) *String {
 	S := String(s)
 	return &S
 }
