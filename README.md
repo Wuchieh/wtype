@@ -43,9 +43,9 @@
 ### SyncMap
 
 - [ ] add example
-- [ ] add test
+- [x] add test
 - [x] json.Marshal
-- [ ] json.Unmarshal
+- [x] json.Unmarshal
 
 ### String & StringSlice
 

@@ -26,5 +26,10 @@ func TestSyncMap(t *testing.T) {
 	} else {
 		t.Log(string(b))
 	}
+	var m2 wtype.SyncMap[string, int]
+	err = json.Unmarshal(b, &m2)
+	if err != nil {
+		t.Fatal("json.Unmarshal Error:", err)
+	}
 	t.Log(actual, loaded)
 }

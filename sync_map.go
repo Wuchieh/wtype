@@ -9,6 +9,19 @@ type SyncMap[K comparable, V any] struct {
 	m sync.Map
 }
 
+// UnmarshalJSON implementation json.Unmarshal
+func (s *SyncMap[K, V]) UnmarshalJSON(bytes []byte) error {
+	m := make(map[K]V)
+	if err := json.Unmarshal(bytes, &m); err != nil {
+		return err
+	}
+	for k, v := range m {
+		s.m.Store(k, v)
+	}
+	return nil
+}
+
+// MarshalJSON implementation json.Marshal
 func (s *SyncMap[K, V]) MarshalJSON() ([]byte, error) {
 	m := make(map[K]V)
 	s.m.Range(func(key, value any) bool {
