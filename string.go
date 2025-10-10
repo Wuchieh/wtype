@@ -68,6 +68,14 @@ func (s *String) Len() int {
 	return StringLen(s.ToString())
 }
 
+func (s *String) HasSuffix(suffix string) bool {
+	return strings.HasSuffix(s.String(), suffix)
+}
+
+func (s *String) HasPrefix(prefix string) bool {
+	return strings.HasPrefix(s.String(), prefix)
+}
+
 func NewString[T ~string](s T) *String {
 	S := String(s)
 	return &S
