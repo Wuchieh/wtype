@@ -44,7 +44,7 @@
 
 - [ ] add example
 - [x] add test
-- [x] json.Marshal
+- [x] json.Marshal (need use *SyncMap)
 - [x] json.Unmarshal
 
 ### String & StringSlice
