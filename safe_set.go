@@ -65,8 +65,13 @@ func (s *SafeSet[T]) Clear() {
 // The iteration is performed under a read lock.
 func (s *SafeSet[T]) Range(f func(T) bool) {
 	s.mx.RLock()
-	defer s.mx.RUnlock()
-	s.s.Range(f)
+	cp := s.s.Values()
+	s.mx.RUnlock()
+	for _, v := range cp {
+		if !f(v) {
+			break
+		}
+	}
 }
 
 // NewSafeSet creates a new empty SafeSet.
