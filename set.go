@@ -1,6 +1,9 @@
 package wtype
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"sort"
+)
 
 // Set is a generic, non-thread-safe set implementation.
 type Set[T comparable] struct {
@@ -76,6 +79,15 @@ func (s *Set[T]) Range(f func(T) bool) {
 			break
 		}
 	}
+}
+
+// SortValues sort the set values
+func (s *Set[T]) SortValues(cmp func(a T, b T) bool) []T {
+	result := s.Values()
+	sort.Slice(result, func(i, j int) bool {
+		return cmp(result[i], result[j])
+	})
+	return result
 }
 
 // NewSet creates a new empty Set.
