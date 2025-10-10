@@ -321,26 +321,6 @@ func StackString(skip int, reverse ...bool) string {
 }
 
 // Stack returns a nicely formatted stack frame, skipping skip frames.
-func Stack(skip int) []byte {
-	// +1 是為了跳過當前 Stack 函數本身
-	callers := make([]uintptr, 32)
-	n := runtime.Callers(skip+2, callers) // +2 跳過 Callers 和 Stack 函數
-
-	if n == 0 {
-		return []byte("no stack available")
-	}
-
-	frames := runtime.CallersFrames(callers[:n])
-	var buf strings.Builder
-
-	for {
-		frame, more := frames.Next()
-		_, _ = fmt.Fprintf(&buf, "%s\n\t%s:%d\n", frame.Function, frame.File, frame.Line)
-
-		if !more {
-			break
-		}
-	}
-
-	return []byte(buf.String())
+func Stack(skip int, reverse ...bool) []byte {
+	return StringToByte(StackString(skip, reverse...))
 }
