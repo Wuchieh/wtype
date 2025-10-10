@@ -1,8 +1,15 @@
 package wtype
 
+import "encoding/json"
+
 // Set is a generic, non-thread-safe set implementation.
 type Set[T comparable] struct {
 	m map[T]struct{}
+}
+
+// MarshalJSON implementation json.Marshal
+func (s *Set[T]) MarshalJSON() ([]byte, error) {
+	return json.Marshal(s.Get())
 }
 
 // Values is an alias for Get.
