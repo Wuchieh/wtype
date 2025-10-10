@@ -72,10 +72,7 @@ func (s *SafeSet[T]) Range(f func(T) bool) {
 // NewSafeSet creates a new empty SafeSet.
 func NewSafeSet[T comparable](val ...T) *SafeSet[T] {
 	s := SafeSet[T]{
-		s: *NewSet[T](),
-	}
-	for _, t := range val {
-		s.Add(t)
+		s: *NewSet[T](val...),
 	}
 	return &s
 }
