@@ -76,6 +76,10 @@ func (s *String) HasPrefix(prefix string) bool {
 	return strings.HasPrefix(s.String(), prefix)
 }
 
+func (s *String) Count(substr string) int {
+	return strings.Count(s.String(), substr)
+}
+
 func NewString[T ~string](s T) *String {
 	S := String(s)
 	return &S
