@@ -42,7 +42,7 @@
 
 ### SyncMap
 
-- [ ] add example
+- [x] add example
 - [x] add test
 - [x] json.Marshal (need use *SyncMap)
 - [x] json.Unmarshal

@@ -2,12 +2,13 @@ package wtype_test
 
 import (
 	"encoding/json"
-	"testing"
+	"fmt"
+	"log"
 
 	"github.com/wuchieh/wtype"
 )
 
-func TestSyncMap(t *testing.T) {
+func ExampleNewSyncMap() {
 	m := wtype.NewSyncMap[string, int]()
 	m.Store("a", 1)
 	m.Store("b", 2)
@@ -16,23 +17,30 @@ func TestSyncMap(t *testing.T) {
 		return true
 	})
 	m.Range(func(key string, value int) bool {
-		t.Log(key, value)
+		fmt.Println(key, value)
 		return true
 	})
 
 	actual, loaded := m.LoadOrStore("a", 1)
-	b, err := json.Marshal(m)
+	fmt.Println(actual, loaded)
 
+	b, err := json.Marshal(m)
 	if err != nil {
-		t.Fatal("json.Marshal Error:", err)
-	} else {
-		t.Log(string(b))
+		log.Fatal("json.Marshal Error:", err)
 	}
 
 	var m2 wtype.SyncMap[string, int]
 	err = json.Unmarshal(b, &m2)
 	if err != nil {
-		t.Fatal("json.Unmarshal Error:", err)
+		log.Fatal("json.Unmarshal Error:", err)
 	}
-	t.Log(actual, loaded)
+
+	a, _ := m2.Load("a")
+	fmt.Println(a == 2)
+
+	// output:
+	// a 2
+	// b 3
+	// 2 true
+	// true
 }
