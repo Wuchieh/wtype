@@ -9,6 +9,7 @@ type SafeSet[T comparable] struct {
 }
 
 // MarshalJSON implementation json.Marshal
+// nolint:govet
 func (s SafeSet[T]) MarshalJSON() ([]byte, error) {
 	return s.s.MarshalJSON()
 }
