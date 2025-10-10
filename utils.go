@@ -277,6 +277,49 @@ func Fallback[T any](data ...T) T {
 	return zero
 }
 
+// StackString returns a nicely formatted stack frame, skipping skip frames.
+func StackString(skip int, reverse ...bool) string {
+	callers := make([]uintptr, 32)
+	n := runtime.Callers(skip+2, callers)
+
+	if n == 0 {
+		return ""
+	}
+
+	frames := runtime.CallersFrames(callers[:n])
+
+	// 收集所有幀
+	var frameList []runtime.Frame
+	for {
+		frame, more := frames.Next()
+		frameList = append(frameList, frame)
+		if !more {
+			break
+		}
+	}
+
+	var buf strings.Builder
+	buf.Grow(len(frameList) * 128)
+
+	// 判斷是否需要反轉
+	shouldReverse := len(reverse) > 0 && reverse[0]
+
+	if shouldReverse {
+		// 反向遍歷
+		for i := len(frameList) - 1; i >= 0; i-- {
+			frame := frameList[i]
+			fmt.Fprintf(&buf, "%s\n\t%s:%d\n", frame.Function, frame.File, frame.Line)
+		}
+	} else {
+		// 正向遍歷
+		for _, frame := range frameList {
+			fmt.Fprintf(&buf, "%s\n\t%s:%d\n", frame.Function, frame.File, frame.Line)
+		}
+	}
+
+	return buf.String()
+}
+
 // Stack returns a nicely formatted stack frame, skipping skip frames.
 func Stack(skip int) []byte {
 	// +1 是為了跳過當前 Stack 函數本身
