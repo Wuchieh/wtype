@@ -8,18 +8,16 @@ type SafeSet[T comparable] struct {
 	s  Set[T]
 }
 
+// MarshalJSON implementation json.Marshal
+func (s SafeSet[T]) MarshalJSON() ([]byte, error) {
+	return s.s.MarshalJSON()
+}
+
 // UnmarshalJSON implementation json.Unmarshal
 func (s *SafeSet[T]) UnmarshalJSON(bytes []byte) error {
 	s.mx.Lock()
 	defer s.mx.Unlock()
 	return s.s.UnmarshalJSON(bytes)
-}
-
-// MarshalJSON implementation json.Marshal
-func (s *SafeSet[T]) MarshalJSON() ([]byte, error) {
-	s.mx.RLock()
-	defer s.mx.RUnlock()
-	return s.s.MarshalJSON()
 }
 
 // Values returns all elements in the set as a slice.
