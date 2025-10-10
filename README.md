@@ -14,7 +14,7 @@
 ### SafeCache
 
 - [x] add example
-- [ ] add test
+- [x] add test
 
 ### Set
 
