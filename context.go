@@ -47,7 +47,7 @@ func (c *Context[T]) Set(s string, a any) {
 	c.data[s] = a
 }
 
-func (c *Context[T]) copy() *Context[T] {
+func (c *Context[T]) DoBefore() IContext {
 	cp := *c
 	cp.index = 0
 	cp.aborted = false
@@ -57,8 +57,7 @@ func (c *Context[T]) copy() *Context[T] {
 }
 
 func (c *Context[T]) Do() {
-	cp := c.copy()
-	cp.Next()
+	ContextDo(c)
 }
 
 func NewContext[T any](c T) Context[T] {
@@ -70,4 +69,12 @@ func NewContext[T any](c T) Context[T] {
 func AddHandler[T any](ctx Context[T], handlers ...func(*Context[T])) Context[T] {
 	ctx.handler = append(ctx.handler, handlers...)
 	return ctx
+}
+
+func ContextDo(ctx IContext) {
+	_c, ok := ctx.(IContextDoBefore)
+	if ok {
+		ctx = _c.DoBefore()
+	}
+	ctx.Next()
 }
