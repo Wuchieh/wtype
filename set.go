@@ -7,6 +7,11 @@ type Set[T comparable] struct {
 	m map[T]struct{}
 }
 
+// MarshalJSON implementation json.Marshal
+func (s Set[T]) MarshalJSON() ([]byte, error) {
+	return json.Marshal(s.Get())
+}
+
 // UnmarshalJSON implementation json.Unmarshal
 func (s *Set[T]) UnmarshalJSON(bytes []byte) error {
 	var data []T
@@ -18,11 +23,6 @@ func (s *Set[T]) UnmarshalJSON(bytes []byte) error {
 		s.m[v] = struct{}{}
 	}
 	return nil
-}
-
-// MarshalJSON implementation json.Marshal
-func (s *Set[T]) MarshalJSON() ([]byte, error) {
-	return json.Marshal(s.Get())
 }
 
 // Values is an alias for Get.
