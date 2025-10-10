@@ -25,7 +25,7 @@
 
 ### SafeSet
 
-- [ ] add example
+- [x] add example
 - [x] add test
 - [ ] json.Marshal
 - [ ] json.Unmarshal
