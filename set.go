@@ -7,6 +7,19 @@ type Set[T comparable] struct {
 	m map[T]struct{}
 }
 
+// UnmarshalJSON implementation json.Unmarshal
+func (s *Set[T]) UnmarshalJSON(bytes []byte) error {
+	var data []T
+	if err := json.Unmarshal(bytes, &data); err != nil {
+		return err
+	}
+	s.m = make(map[T]struct{}, len(data))
+	for _, v := range data {
+		s.m[v] = struct{}{}
+	}
+	return nil
+}
+
 // MarshalJSON implementation json.Marshal
 func (s *Set[T]) MarshalJSON() ([]byte, error) {
 	return json.Marshal(s.Get())
