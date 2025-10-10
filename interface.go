@@ -20,3 +20,16 @@ type ISet[T comparable] interface {
 	Contains(T) bool
 	Values() []T
 }
+
+type IMap[K comparable, V any] interface {
+	Load(key K) (value V, ok bool)
+	Store(key K, value V)
+	LoadOrStore(key K, value V) (actual V, loaded bool)
+	LoadAndDelete(key K) (value V, loaded bool)
+	Delete(K)
+	Swap(key K, value V) (previous V, loaded bool)
+	CompareAndSwap(key K, old, new V) (swapped bool)
+	CompareAndDelete(key K, old V) (deleted bool)
+	Range(func(key K, value V) (shouldContinue bool))
+	Clear()
+}
