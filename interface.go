@@ -29,6 +29,10 @@ type IContext interface {
 	Set(string, any)
 }
 
+type IContextDoBefore interface {
+	DoBefore() IContext
+}
+
 type IMap[K comparable, V any] interface {
 	Load(key K) (value V, ok bool)
 	Store(key K, value V)
