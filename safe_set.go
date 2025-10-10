@@ -87,6 +87,13 @@ func (s *SafeSet[T]) Range(f func(T) bool) {
 	}
 }
 
+// SortValues sort the set values
+func (s *SafeSet[T]) SortValues(cmp func(a T, b T) bool) []T {
+	s.mx.RLock()
+	defer s.mx.RUnlock()
+	return s.s.SortValues(cmp)
+}
+
 // NewSafeSet creates a new empty SafeSet.
 func NewSafeSet[T comparable](val ...T) *SafeSet[T] {
 	s := SafeSet[T]{
