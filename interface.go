@@ -21,6 +21,14 @@ type ISet[T comparable] interface {
 	Values() []T
 }
 
+type IContext interface {
+	Next()
+	Abort()
+	IsAborted() bool
+	Get(string) (any, bool)
+	Set(string, any)
+}
+
 type IMap[K comparable, V any] interface {
 	Load(key K) (value V, ok bool)
 	Store(key K, value V)

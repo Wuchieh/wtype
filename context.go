@@ -1,13 +1,5 @@
 package wtype
 
-type IContext interface {
-	Next()
-	Abort()
-	IsAborted() bool
-	Get(string) (any, bool)
-	Set(string, any)
-}
-
 type Context[T any] struct {
 	index   int
 	handler []func(*Context[T])
