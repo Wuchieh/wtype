@@ -21,5 +21,6 @@ func TestContext(t *testing.T) {
 			c.C++
 		},
 	)
-	ctx.Next()
+
+	ctx.Do()
 }

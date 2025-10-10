@@ -47,6 +47,20 @@ func (c *Context[T]) Set(s string, a any) {
 	c.data[s] = a
 }
 
+func (c *Context[T]) copy() *Context[T] {
+	cp := *c
+	cp.index = 0
+	cp.aborted = false
+	cp.data = nil
+	copy(cp.handler, c.handler)
+	return &cp
+}
+
+func (c *Context[T]) Do() {
+	cp := c.copy()
+	cp.Next()
+}
+
 func NewContext[T any](c T) Context[T] {
 	return Context[T]{
 		C: c,
