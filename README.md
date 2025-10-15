@@ -27,7 +27,7 @@
 
 - [x] add example
 - [x] add test
-- [x] json.Marshal
+- [x] json.Marshal (need use *SafeSet)
 - [x] json.Unmarshal
 
 ### Context
