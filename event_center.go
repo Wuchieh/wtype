@@ -38,16 +38,6 @@ func (e *EventCenter) Once(key string, handler EventHandler) {
 
 		// Remove this handler after execution
 		e.Off(key, wrappedHandler)
-		//e.lock.Lock()
-		//defer e.lock.Unlock()
-		//if handlers, ok := e.event[key]; ok {
-		//	for i, h := range handlers {
-		//		if reflect.ValueOf(h).Pointer() == reflect.ValueOf(wrappedHandler).Pointer() {
-		//			e.event[key] = append(handlers[:i], handlers[i+1:]...)
-		//			break
-		//		}
-		//	}
-		//}
 	}
 
 	e.event[key] = append(e.event[key], wrappedHandler)
