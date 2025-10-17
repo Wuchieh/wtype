@@ -56,4 +56,4 @@
 
 - [x] add example
 - [x] add test
-- [ ] add Once
+- [x] add Once

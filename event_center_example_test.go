@@ -52,3 +52,16 @@ func ExampleNewEventCenter() {
 	// -----
 	// once
 }
+
+func ExampleEventCenter_Once() {
+	ec := wtype.NewEventCenter()
+	ec.Once("once", func(data ...any) {
+		fmt.Println(data...)
+	})
+
+	ec.Emit("once", "first")
+	ec.Emit("once", "second")
+
+	// output:
+	// first
+}

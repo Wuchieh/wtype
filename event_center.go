@@ -24,6 +24,35 @@ func (e *EventCenter) On(key string, handler EventHandler) {
 	e.event[key] = append(e.event[key], handler)
 }
 
+// Once registers a handler that will only be executed once for the given event key.
+// After the first execution, the handler is automatically removed.
+func (e *EventCenter) Once(key string, handler EventHandler) {
+	e.lock.Lock()
+	defer e.lock.Unlock()
+
+	// Create a wrapper handler that removes itself after execution
+	var wrappedHandler EventHandler
+	wrappedHandler = func(data ...any) {
+		// Execute the original handler
+		handler(data...)
+
+		// Remove this handler after execution
+		e.Off(key, wrappedHandler)
+		//e.lock.Lock()
+		//defer e.lock.Unlock()
+		//if handlers, ok := e.event[key]; ok {
+		//	for i, h := range handlers {
+		//		if reflect.ValueOf(h).Pointer() == reflect.ValueOf(wrappedHandler).Pointer() {
+		//			e.event[key] = append(handlers[:i], handlers[i+1:]...)
+		//			break
+		//		}
+		//	}
+		//}
+	}
+
+	e.event[key] = append(e.event[key], wrappedHandler)
+}
+
 // Off removes a specific handler for the given event key.
 // It compares handlers by their underlying function pointer value.
 func (e *EventCenter) Off(key string, handler EventHandler) {
