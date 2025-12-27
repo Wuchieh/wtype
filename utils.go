@@ -324,3 +324,9 @@ func StackString(skip int, reverse ...bool) string {
 func Stack(skip int, reverse ...bool) []byte {
 	return StringToByte(StackString(skip, reverse...))
 }
+
+// Assertion asserting a as
+func Assertion[T any](a any) (T, bool) {
+	t, ok := a.(T)
+	return t, ok
+}

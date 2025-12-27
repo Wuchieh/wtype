@@ -441,3 +441,19 @@ func TestByteToString(t *testing.T) {
 		t.Fatal("ByteToString error")
 	}
 }
+
+func TestAssertion(t *testing.T) {
+	toAny := func(a any) any {
+		return a
+	}
+	str := toAny("Hello World")
+	num := toAny(3.14)
+
+	if s, ok := wtype.Assertion[string](str); !ok || s != "Hello World" {
+		t.Error("string Assertion error")
+	}
+
+	if f, ok := wtype.Assertion[float64](num); !ok || f != 3.14 {
+		t.Error("float64 Assertion error")
+	}
+}
