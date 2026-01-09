@@ -1,6 +1,7 @@
 package wtype_test
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 	"strings"
@@ -453,9 +454,83 @@ func TestAssertion(t *testing.T) {
 		t.Error("string Assert error")
 	}
 
-	if f, ok := wtype.Assertion[float64](num); !ok || f != 3.14 {
-		t.Error("float64 Assertion error")
 	if f, ok := wtype.Assert[float64](num); !ok || f != 3.14 {
 		t.Error("float64 Assert error")
+	}
+}
+
+func TestMapConvert(t *testing.T) {
+	m := map[string]int{
+		"a": 1,
+		"b": 2,
+		"c": 3,
+	}
+
+	m2 := wtype.MapConvert(m, func(k string, v int) (int, string, bool) {
+		return v, k, true
+	})
+
+	if len(m2) != 3 {
+		t.Error("MapConvert error: len")
+	}
+
+	if m2[1] != "a" || m2[2] != "b" || m2[3] != "c" {
+		t.Error("MapConvert error: value")
+	}
+
+	m3 := wtype.MapConvert(m, func(k string, v int) (int, string, bool) {
+		if v%2 == 0 {
+			return 0, "", false
+		}
+		return v, k, true
+	})
+
+	if len(m3) != 2 {
+		t.Error("MapConvert error: filter len")
+	}
+
+	if _, ok := m3[2]; ok {
+		t.Error("MapConvert error: filter value")
+	}
+}
+
+func TestMapReverse(t *testing.T) {
+	m := map[string]int{
+		"a": 1,
+		"b": 2,
+		"c": 3,
+	}
+
+	m2 := wtype.MapReverse(m)
+
+	if len(m2) != 3 {
+		t.Error("MapReverse error: len")
+	}
+
+	if m2[1] != "a" || m2[2] != "b" || m2[3] != "c" {
+		t.Error("MapReverse error: value")
+	}
+}
+
+func TestContextIsTimeout(t *testing.T) {
+	if wtype.ContextIsTimeout(nil) {
+		t.Error("ContextIsTimeout error: nil")
+	}
+
+	if wtype.ContextIsTimeout(context.Background()) {
+		t.Error("ContextIsTimeout error: background")
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Millisecond)
+	defer cancel()
+
+	if wtype.ContextIsTimeout(ctx) {
+		t.Error("ContextIsTimeout error: not timeout")
+	}
+
+	time.Sleep(20 * time.Millisecond)
+
+	if !wtype.ContextIsTimeout(ctx) {
+		t.Error("ContextIsTimeout error: timeout")
 	}
 }

@@ -1,10 +1,12 @@
 package wtype
 
 import (
+	"context"
 	"fmt"
 	"reflect"
 	"runtime"
 	"strings"
+	"time"
 	"unicode/utf8"
 	"unsafe"
 
@@ -332,4 +334,38 @@ func Stack(skip int, reverse ...bool) []byte {
 func Assert[T any](a any) (T, bool) {
 	t, ok := a.(T)
 	return t, ok
+}
+
+// MapConvert converts map[K]V to map[K2]V2.
+//
+//	If the conversion function returns false, the element will be skipped.
+func MapConvert[K, V, K2, V2 comparable](m map[K]V, f func(K, V) (K2, V2, bool)) map[K2]V2 {
+	result := make(map[K2]V2, len(m))
+	for k, v := range m {
+		k2, v2, ok := f(k, v)
+		if !ok {
+			continue
+		}
+		result[k2] = v2
+	}
+	return result
+}
+
+// MapReverse swaps the keys and values of map[K]V.
+func MapReverse[K, V comparable](m map[K]V) map[V]K {
+	return MapConvert(m, func(k K, v V) (V, K, bool) {
+		return v, k, true
+	})
+}
+
+// ContextIsTimeout checks if the context has timed out.
+func ContextIsTimeout(ctx context.Context) bool {
+	if ctx == nil {
+		return false
+	}
+	deadline, ok := ctx.Deadline()
+	if !ok {
+		return false
+	}
+	return deadline.Before(time.Now())
 }
