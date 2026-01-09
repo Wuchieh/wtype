@@ -1,26 +1,49 @@
 package wtype_test
 
 import (
-	"fmt"
 	"testing"
+	"time"
+	"unsafe"
 
 	"github.com/wuchieh/wtype"
 )
 
 func TestContext(t *testing.T) {
-	ctx := wtype.NewContext[int](0)
-	ctx = wtype.AddHandler(ctx,
+	c := wtype.NewContext(1)
+	var p2 unsafe.Pointer
+	var ok bool
+	p := unsafe.Pointer(&c)
+
+	c = wtype.AddHandler(c,
 		func(c *wtype.Context[int]) {
-			c.Next()
-			fmt.Println(c.C)
+			done := c.Done()
+			go func() {
+				<-done
+				ok = true
+			}()
+		},
+		func(c *wtype.Context[int]) {
+			p2 = unsafe.Pointer(c)
 		},
 		func(c *wtype.Context[int]) {
 			c.C++
 		},
 		func(c *wtype.Context[int]) {
 			c.C++
+		},
+		func(c *wtype.Context[int]) {
+
+			if p == p2 || c.C != 3 {
+				t.Error("context data error")
+			}
 		},
 	)
-
-	ctx.Do()
+	c.Do()
+	if c.C == 3 {
+		t.Error("src context data error")
+	}
+	time.Sleep(1)
+	if !ok {
+		t.Error("context error no ok")
+	}
 }

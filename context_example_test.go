@@ -25,8 +25,15 @@ func ExampleNewContext() {
 	)
 
 	ctx.Do()
+	fmt.Println("==========")
+	ctx.Do()
 
 	// output:
+	// 1
+	// 2
+	// 3
+	// Data: 1
+	// ==========
 	// 1
 	// 2
 	// 3
