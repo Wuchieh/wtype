@@ -325,8 +325,11 @@ func Stack(skip int, reverse ...bool) []byte {
 	return StringToByte(StackString(skip, reverse...))
 }
 
-// Assertion asserting a as
-func Assertion[T any](a any) (T, bool) {
+// Assert asserts that a is of type T.
+//
+//	If successful, it returns the value of type T and true.
+//	If it fails, it returns the zero value of type T and false.
+func Assert[T any](a any) (T, bool) {
 	t, ok := a.(T)
 	return t, ok
 }

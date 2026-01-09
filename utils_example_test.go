@@ -46,10 +46,10 @@ func ExampleSliceConvert2() {
 	// [0 2 4 6 8]
 }
 
-func ExampleAssertion() {
+func ExampleAssert() {
 	a := any(int32(5))
-	fmt.Println(wtype.Assertion[int32](a))
-	fmt.Println(wtype.Assertion[int](a))
+	fmt.Println(wtype.Assert[int32](a))
+	fmt.Println(wtype.Assert[int](a))
 
 	// output:
 	// 5 true
