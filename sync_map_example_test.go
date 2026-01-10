@@ -16,10 +16,10 @@ func ExampleNewSyncMap() {
 		m.Store(key, value+1)
 		return true
 	})
-	m.Range(func(key string, value int) bool {
-		fmt.Println(key, value)
-		return true
-	})
+	for _, k := range []string{"a", "b"} {
+		v, _ := m.Load(k)
+		fmt.Println(k, v)
+	}
 
 	actual, loaded := m.LoadOrStore("a", 1)
 	fmt.Println(actual, loaded)
