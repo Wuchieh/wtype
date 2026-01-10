@@ -115,12 +115,12 @@ func ExampleMapReverse() {
 }
 
 func ExampleContextIsTimeout() {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Millisecond)
+	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
 	defer cancel()
 
 	fmt.Println(wtype.ContextIsTimeout(ctx))
 
-	time.Sleep(50 * time.Millisecond)
+	time.Sleep(200 * time.Millisecond)
 
 	fmt.Println(wtype.ContextIsTimeout(ctx))
 
