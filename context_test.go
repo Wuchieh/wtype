@@ -42,7 +42,7 @@ func TestContext(t *testing.T) {
 	if c.C == 3 {
 		t.Error("src context data error")
 	}
-	time.Sleep(1)
+	time.Sleep(time.Millisecond)
 	if !ok {
 		t.Error("context error no ok")
 	}
