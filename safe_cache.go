@@ -14,17 +14,23 @@ type SafeCache[T any] struct {
 //
 //	The data will be retained permanently.
 func (s *SafeCache[T]) StopTimer() {
+	s.mutex.Lock()
 	s.cache.StopTimer()
+	s.mutex.Unlock()
 }
 
 // ResetTimer resets the timer of the cache.
 func (s *SafeCache[T]) ResetTimer() {
+	s.mutex.Lock()
 	s.cache.ResetTimer()
+	s.mutex.Unlock()
 }
 
 // SetDuration sets the duration of the cache.
 func (s *SafeCache[T]) SetDuration(duration time.Duration) {
+	s.mutex.Lock()
 	s.cache.SetDuration(duration)
+	s.mutex.Unlock()
 }
 
 // Set sets the data of the cache.
