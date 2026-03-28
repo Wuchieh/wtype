@@ -50,7 +50,7 @@ func (c *CustomCache[T]) Get() T {
 }
 
 func (c *CustomCache[T]) SetDuration(duration time.Duration) {
-	if c.beforeSetDuration == nil {
+	if c.beforeSetDuration != nil {
 		duration = c.beforeSetDuration(duration)
 	}
 	c.duration = duration
