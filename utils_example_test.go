@@ -128,3 +128,17 @@ func ExampleContextIsTimeout() {
 	// false
 	// true
 }
+
+func ExampleSliceGroupByKey() {
+	s := []int{1, 2, 3, 4, 5}
+	m := wtype.SliceGroupByKey(s, func(v int) int {
+		return v % 2
+	})
+
+	fmt.Println(m[0])
+	fmt.Println(m[1])
+
+	// output:
+	// [2 4]
+	// [1 3 5]
+}

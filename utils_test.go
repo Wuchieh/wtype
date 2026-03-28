@@ -3,6 +3,7 @@ package wtype_test
 import (
 	"context"
 	"fmt"
+	"slices"
 	"strconv"
 	"strings"
 	"sync"
@@ -532,5 +533,16 @@ func TestContextIsTimeout(t *testing.T) {
 
 	if !wtype.ContextIsTimeout(ctx) {
 		t.Error("ContextIsTimeout error: timeout")
+	}
+}
+
+func TestSliceGroupByKey(t *testing.T) {
+	s := []int{1, 2, 3, 4, 5}
+	m := wtype.SliceGroupByKey(s, func(v int) int {
+		return v % 2
+	})
+
+	if !slices.Equal(m[0], []int{2, 4}) || !slices.Equal(m[1], []int{1, 3, 5}) {
+		t.Error("SliceGroupByKey error")
 	}
 }
