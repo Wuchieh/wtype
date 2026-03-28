@@ -369,3 +369,17 @@ func ContextIsTimeout(ctx context.Context) bool {
 	}
 	return deadline.Before(time.Now())
 }
+
+// SliceGroupByKey Groups a slice using the specified key function,
+// returning a map where the keys are the grouping
+// keys and the values are the corresponding slices of elements.
+func SliceGroupByKey[V any, K comparable](s []V, key func(V) K) map[K][]V {
+	result := make(map[K][]V)
+	for _, v := range s {
+		k := key(v)
+		list := result[k]
+		list = append(list, v)
+		result[k] = list
+	}
+	return result
+}
