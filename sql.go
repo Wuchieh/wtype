@@ -24,7 +24,7 @@ func (j *SqlJSON) Scan(value interface{}) error {
 		return errors.New(fmt.Sprint("Failed to unmarshal JSONB value:", value))
 	}
 
-	result := json.RawMessage{}
+	var result json.RawMessage
 	err := json.Unmarshal(bytes, &result)
 	*j = SqlJSON(result)
 	return err
@@ -77,6 +77,6 @@ func (j *SqlJSON2[T]) Scan(value interface{}) error {
 	}
 
 	// 只需要一次解析
-	j.SqlJSON = bytes
+	j.SqlJSON = append([]byte(nil), bytes...)
 	return nil
 }

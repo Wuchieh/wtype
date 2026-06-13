@@ -32,7 +32,6 @@ func TestContext(t *testing.T) {
 			c.C++
 		},
 		func(c *wtype.Context[int]) {
-
 			if p == p2 || c.C != 3 {
 				t.Error("context data error")
 			}
