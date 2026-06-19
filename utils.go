@@ -89,12 +89,12 @@ func DoSharedForget(key string) {
 func StructStringTrim(v any) {
 	rv := reflect.ValueOf(v)
 
-	if rv.Kind() != reflect.Ptr {
+	if rv.Kind() != reflect.Pointer {
 		return
 	}
 
 	rv = rv.Elem()
-	for rv.Kind() == reflect.Ptr &&
+	for rv.Kind() == reflect.Pointer &&
 		!rv.IsNil() {
 		rv = rv.Elem()
 	}
@@ -151,7 +151,7 @@ func trimValue(rv reflect.Value, record map[reflect.Value]struct{}) {
 	switch rv.Kind() {
 	case reflect.Struct:
 		trimStruct(rv, record)
-	case reflect.Ptr:
+	case reflect.Pointer:
 		trimPointer(rv, record)
 	case reflect.Slice, reflect.Array:
 		trimSliceOrArray(rv, record)
