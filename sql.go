@@ -49,16 +49,23 @@ func (SqlJSON) GormDBDataType(db *gorm.DB, _ *schema.Field) string {
 	return ""
 }
 
+// SqlJSON2 is a typed JSON column wrapper that can unmarshal into T.
+//
 //revive:disable-next-line var-naming
 type SqlJSON2[T any] struct {
 	SqlJSON
 }
+
+// SQLJSON2 is an alias for SqlJSON2.
 type SQLJSON2[T any] = SqlJSON2[T]
 
+// Unmarshal unmarshals the stored JSON into a.
 func (j SqlJSON2[T]) Unmarshal(a *T) error {
 	return json.Unmarshal(j.SqlJSON, a)
 }
 
+// Scan implements the sql.Scanner interface and validates that the scanned
+// value is valid JSON for type T.
 func (j *SqlJSON2[T]) Scan(value interface{}) error {
 	if value == nil {
 		j.SqlJSON = SqlJSON("null")

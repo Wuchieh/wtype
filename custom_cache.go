@@ -17,6 +17,7 @@ type CustomCache[T any] struct {
 	stopTimer         func()
 }
 
+// NewCustomCache creates a CustomCache backed by the given functions.
 func NewCustomCache[T any](
 	duration time.Duration,
 	setFunc func(T, time.Duration),
@@ -35,6 +36,7 @@ func NewCustomCache[T any](
 	}
 }
 
+// Set stores the value using the configured set function.
 func (c *CustomCache[T]) Set(t T) {
 	if c.setFunc == nil {
 		return
@@ -42,6 +44,7 @@ func (c *CustomCache[T]) Set(t T) {
 	c.setFunc(t, c.duration)
 }
 
+// Get returns the value from the configured get function.
 func (c *CustomCache[T]) Get() T {
 	if c.getFunc == nil {
 		return *new(T)
@@ -49,6 +52,8 @@ func (c *CustomCache[T]) Get() T {
 	return c.getFunc()
 }
 
+// SetDuration sets the cache duration, applying the beforeSetDuration hook when
+// provided.
 func (c *CustomCache[T]) SetDuration(duration time.Duration) {
 	if c.beforeSetDuration != nil {
 		duration = c.beforeSetDuration(duration)
@@ -56,6 +61,7 @@ func (c *CustomCache[T]) SetDuration(duration time.Duration) {
 	c.duration = duration
 }
 
+// ResetTimer resets the cache timer using the configured reset function.
 func (c *CustomCache[T]) ResetTimer() {
 	if c.resetTimer == nil {
 		return
@@ -63,6 +69,7 @@ func (c *CustomCache[T]) ResetTimer() {
 	c.resetTimer(c.duration)
 }
 
+// StopTimer stops the cache timer using the configured stop function.
 func (c *CustomCache[T]) StopTimer() {
 	if c.stopTimer == nil {
 		return

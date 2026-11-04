@@ -15,6 +15,7 @@ import (
 
 var shared = singleflight.Group{}
 
+// SharedChanResult holds the result delivered by DoSharedChan.
 type SharedChanResult[T any] struct {
 	singleflight.Result
 	Val T

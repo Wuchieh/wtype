@@ -5,6 +5,7 @@ import (
 	"time"
 )
 
+// SafeCache is a thread-safe version of Cache.
 type SafeCache[T any] struct {
 	cache Cache[T]
 	mutex sync.RWMutex

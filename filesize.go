@@ -5,6 +5,7 @@ import "fmt"
 // FileSize represents file size units in bytes.
 type FileSize int64
 
+// String returns the human-readable representation of the file size.
 func (s FileSize) String() string {
 	const unit = 1024
 	if s < unit {

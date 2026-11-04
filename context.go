@@ -5,6 +5,8 @@ import (
 	"time"
 )
 
+// Context is a generic handler-chain context that also implements
+// context.Context.
 type Context[T any] struct {
 	ctx       context.Context
 	ctxCancel context.CancelFunc
@@ -15,18 +17,24 @@ type Context[T any] struct {
 	C         T
 }
 
+// Deadline returns the time when work done on behalf of this context should be
+// canceled.
 func (c *Context[T]) Deadline() (deadline time.Time, ok bool) {
 	return c.ctx.Deadline()
 }
 
+// Done returns a channel that is closed when the context is canceled.
 func (c *Context[T]) Done() <-chan struct{} {
 	return c.ctx.Done()
 }
 
+// Err returns a non-nil error if the context was canceled or timed out.
 func (c *Context[T]) Err() error {
 	return c.ctx.Err()
 }
 
+// Value returns the value stored for the given key, or nil if the key is not a
+// string or does not exist.
 func (c *Context[T]) Value(key any) any {
 	k, ok := Assert[string](key)
 	if !ok {
@@ -57,6 +65,7 @@ func (c *Context[T]) clone() IContext {
 	return &cp
 }
 
+// Next executes the remaining handlers in the chain.
 func (c *Context[T]) Next() {
 	defer c.ctxCancel()
 	if c.IsAborted() {
@@ -73,14 +82,17 @@ func (c *Context[T]) Next() {
 	}
 }
 
+// Abort prevents the remaining handlers in the chain from being executed.
 func (c *Context[T]) Abort() {
 	c.aborted = true
 }
 
+// IsAborted reports whether Abort has been called.
 func (c *Context[T]) IsAborted() bool {
 	return c.aborted
 }
 
+// Get returns the value stored for the given key and whether it exists.
 func (c *Context[T]) Get(s string) (any, bool) {
 	if c.data == nil {
 		return nil, false
@@ -90,6 +102,7 @@ func (c *Context[T]) Get(s string) (any, bool) {
 	return v, ok
 }
 
+// Set stores a value for the given key.
 func (c *Context[T]) Set(s string, a any) {
 	if c.data == nil {
 		c.data = make(map[string]any)
@@ -97,26 +110,34 @@ func (c *Context[T]) Set(s string, a any) {
 	c.data[s] = a
 }
 
+// DoBefore returns a copy of the context that can be modified before Do is
+// called.
 func (c *Context[T]) DoBefore() IContext {
 	cp := c.clone()
 	return cp
 }
 
+// Do executes the handler chain.
 func (c *Context[T]) Do() {
 	ContextDo(c)
 }
 
+// NewContext creates a new Context with the given value.
 func NewContext[T any](c T) Context[T] {
 	return Context[T]{
 		C: c,
 	}
 }
 
+// AddHandler appends the given handlers to the context and returns the updated
+// context.
 func AddHandler[T any](ctx Context[T], handlers ...func(*Context[T])) Context[T] {
 	ctx.handler = append(ctx.handler, handlers...)
 	return ctx
 }
 
+// ContextDo executes ctx, calling DoBefore first when the context implements
+// IContextDoBefore.
 func ContextDo(ctx IContext) {
 	_c, ok := ctx.(IContextDoBefore)
 	if ok {
