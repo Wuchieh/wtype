@@ -384,3 +384,15 @@ func SliceGroupByKey[V any, K comparable](s []V, key func(V) K) map[K][]V {
 	}
 	return result
 }
+
+// UseOptions applies each of the given option functions to option in order,
+// then returns the modified value. It is commonly used to build a value from
+// a set of functional options.
+//
+//	cfg := UseOptions(Config{}, WithTimeout(time.Second), WithRetry(3))
+func UseOptions[T any](option T, options ...func(*T)) T {
+	for _, f := range options {
+		f(&option)
+	}
+	return option
+}
