@@ -2,6 +2,7 @@ package wtype
 
 import (
 	"context"
+	"maps"
 	"time"
 )
 
@@ -58,9 +59,7 @@ func (c *Context[T]) clone() IContext {
 		data:      make(map[string]any, len(c.data)),
 		C:         c.C,
 	}
-	for k, v := range c.data {
-		cp.data[k] = v
-	}
+	maps.Copy(cp.data, c.data)
 	copy(cp.handler, c.handler)
 	return &cp
 }

@@ -11,7 +11,8 @@ func ExampleNewContext() {
 
 	type tempCtx = wtype.Context[int]
 
-	ctx = wtype.AddHandler(ctx,
+	ctx = wtype.AddHandler(
+		ctx,
 		func(c *tempCtx) {
 			fmt.Println("1")
 			c.Next()

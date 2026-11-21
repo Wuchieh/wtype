@@ -18,7 +18,7 @@ type (
 )
 
 // Scan implements sql.Scanner interface
-func (j *SqlJSON) Scan(value interface{}) error {
+func (j *SqlJSON) Scan(value any) error {
 	bytes, ok := value.([]byte)
 	if !ok {
 		return errors.New(fmt.Sprint("Failed to unmarshal JSONB value:", value))
@@ -66,7 +66,7 @@ func (j SqlJSON2[T]) Unmarshal(a *T) error {
 
 // Scan implements the sql.Scanner interface and validates that the scanned
 // value is valid JSON for type T.
-func (j *SqlJSON2[T]) Scan(value interface{}) error {
+func (j *SqlJSON2[T]) Scan(value any) error {
 	if value == nil {
 		j.SqlJSON = SqlJSON("null")
 		return nil

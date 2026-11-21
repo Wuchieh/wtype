@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"reflect"
 	"runtime"
+	"slices"
 	"strings"
 	"time"
 	"unicode/utf8"
@@ -26,7 +27,7 @@ type SharedChanResult[T any] struct {
 // executed once, and the result will be shared among all callers.
 func DoShared[T any](key string, fn func() (T, error)) (T, error) {
 	var result T
-	do, err, _ := shared.Do(key, func() (interface{}, error) {
+	do, err, _ := shared.Do(key, func() (any, error) {
 		t, err := fn()
 		if err != nil {
 			return nil, err
@@ -52,7 +53,7 @@ func DoShared2[T any](fn func() (T, error)) (T, error) {
 // If multiple calls with the same key are made concurrently, fn will only be
 // executed once, and the result will be delivered through the returned channel.
 func DoSharedChan[T any](key string, fn func() (T, error)) <-chan SharedChanResult[T] {
-	doChan := shared.DoChan(key, func() (interface{}, error) {
+	doChan := shared.DoChan(key, func() (any, error) {
 		t, err := fn()
 		if err != nil {
 			return nil, err
@@ -309,8 +310,7 @@ func StackString(skip int, reverse ...bool) string {
 
 	if shouldReverse {
 		// 反向遍歷
-		for i := len(frameList) - 1; i >= 0; i-- {
-			frame := frameList[i]
+		for _, frame := range slices.Backward(frameList) {
 			fmt.Fprintf(&buf, "%s\n\t%s:%d\n", frame.Function, frame.File, frame.Line)
 		}
 	} else {

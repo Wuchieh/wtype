@@ -17,11 +17,9 @@ func (w *WaitGroup) Go(f func()) {
 	if f == nil {
 		return
 	}
-	w.wg().Add(1)
-	go func() {
-		defer w.wg().Done()
+	w.wg().Go(func() {
 		f()
-	}()
+	})
 }
 
 // WaitContext waits for the wait group or until ctx is done, whichever happens

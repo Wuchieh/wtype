@@ -14,7 +14,8 @@ func TestContext(t *testing.T) {
 	var ok bool
 	p := unsafe.Pointer(&c)
 
-	c = wtype.AddHandler(c,
+	c = wtype.AddHandler(
+		c,
 		func(c *wtype.Context[int]) {
 			done := c.Done()
 			go func() {
