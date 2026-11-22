@@ -79,11 +79,6 @@ _, err := io.Copy(dst, reader)
 cfg := wtype.UseOptions(Config{}, WithTimeout(time.Second), WithRetry(3))
 ```
 
-## Changelog
-
-See [CHANGELOG.md](CHANGELOG.md) for the release history. The latest release is
-[v1.12.0](https://github.com/Wuchieh/wtype/releases/tag/v1.12.0).
-
 ## TODO
 
 - [x] add lint
