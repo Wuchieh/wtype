@@ -81,6 +81,25 @@ type ErrorGroupOption struct {
 	errorAbort bool
 }
 
+// ErrorGroupWithContext sets the parent context of the ErrorGroup created by
+// NewErrorGroup, so canceling ctx also cancels the group. A nil ctx is treated
+// as context.Background.
+func ErrorGroupWithContext(ctx context.Context) func(*ErrorGroupOption) {
+	return func(opt *ErrorGroupOption) {
+		opt.ctx = ctx
+	}
+}
+
+// ErrorGroupErrorAbort controls whether the ErrorGroup created by NewErrorGroup
+// aborts on the first error. When enabled, the first non-nil error cancels the
+// group's context and is returned by Wait. When disabled (the default), all
+// errors are collected and joined by Wait.
+func ErrorGroupErrorAbort(errorAbort bool) func(*ErrorGroupOption) {
+	return func(opt *ErrorGroupOption) {
+		opt.errorAbort = errorAbort
+	}
+}
+
 // NewErrorGroup creates an ErrorGroup. The given options are applied in order
 // to an ErrorGroupOption before the group is created.
 //
