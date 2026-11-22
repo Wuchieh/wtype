@@ -32,7 +32,7 @@ func ExampleFallback() {
 
 func ExampleSliceConvert2() {
 	var data []int
-	for i := 0; i < 10; i++ {
+	for i := range 10 {
 		data = append(data, i)
 	}
 

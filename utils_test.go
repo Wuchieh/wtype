@@ -191,7 +191,7 @@ func TestSlicePointConvert(t *testing.T) {
 	slice := []string{"a", "b", "c", "d", "e", "f", "g", "h"}
 	slice2 := wtype.SliceUnPointConvert(wtype.SlicePointConvert(slice))
 
-	for i := 0; i < len(slice2); i++ {
+	for i := range slice2 {
 		if slice2[i] != slice[i] {
 			t.Error("SlicePointConvert error")
 		}
@@ -202,7 +202,7 @@ func TestSliceUnPointConvert(t *testing.T) {
 	slice := []string{"a", "b", "c", "d", "e", "f", "g", "h"}
 	slice2 := wtype.SliceUnPointConvert(wtype.SlicePointConvert(slice))
 
-	for i := 0; i < len(slice2); i++ {
+	for i := range slice2 {
 		if slice2[i] != slice[i] {
 			t.Error("SlicePointConvert error")
 		}
@@ -232,7 +232,7 @@ func TestDoShared(t *testing.T) {
 	var wg sync.WaitGroup
 	runTime := 10
 	wg.Add(runTime)
-	for i := 0; i < runTime; i++ {
+	for range runTime {
 		go func() {
 			defer wg.Done()
 			result.start++
@@ -269,7 +269,7 @@ func TestDoSharedChan(t *testing.T) {
 	var wg sync.WaitGroup
 	runTime := 10
 	wg.Add(runTime)
-	for i := 0; i < runTime; i++ {
+	for range runTime {
 		go func() {
 			defer wg.Done()
 			result := <-fn()
@@ -305,7 +305,7 @@ func TestDoSharedForget(t *testing.T) {
 	var wg sync.WaitGroup
 	runTime := 10
 	wg.Add(runTime)
-	for i := 0; i < runTime; i++ {
+	for range runTime {
 		go func() {
 			defer wg.Done()
 			result.start++
@@ -368,7 +368,7 @@ func TestDoShared2(t *testing.T) {
 
 	var wg sync.WaitGroup
 
-	for i := 0; i < 10; i++ {
+	for range 10 {
 		wg.Go(func() {
 			if data := temp(); data != "1" {
 				t.Error("DoShared2 error: need:1 get:", data)
@@ -402,7 +402,7 @@ func TestDoShared2Chan(t *testing.T) {
 
 	var wg sync.WaitGroup
 
-	for i := 0; i < 10; i++ {
+	for range 10 {
 		wg.Go(func() {
 			if temp() != "1" {
 				t.Error("DoShared2 error")

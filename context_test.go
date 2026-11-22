@@ -14,7 +14,8 @@ func TestContext(t *testing.T) {
 	var ok bool
 	p := unsafe.Pointer(&c)
 
-	c = wtype.AddHandler(c,
+	c = wtype.AddHandler(
+		c,
 		func(c *wtype.Context[int]) {
 			done := c.Done()
 			go func() {
@@ -32,7 +33,6 @@ func TestContext(t *testing.T) {
 			c.C++
 		},
 		func(c *wtype.Context[int]) {
-
 			if p == p2 || c.C != 3 {
 				t.Error("context data error")
 			}

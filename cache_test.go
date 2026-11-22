@@ -193,7 +193,7 @@ func TestCache_ConcurrentAccess(t *testing.T) {
 		c := wtype.NewCache[int](time.Second, 0)
 
 		done := make(chan bool)
-		for i := 0; i < 10; i++ {
+		for i := range 10 {
 			go func(val int) {
 				c.Set(val)
 				_ = c.Get()
@@ -201,7 +201,7 @@ func TestCache_ConcurrentAccess(t *testing.T) {
 			}(i)
 		}
 
-		for i := 0; i < 10; i++ {
+		for range 10 {
 			<-done
 		}
 		// Test completes without panic/deadlock
@@ -225,7 +225,7 @@ func TestCache_EdgeCases(t *testing.T) {
 
 	t.Run("multiple timer resets", func(t *testing.T) {
 		c := wtype.NewCache[int](100*time.Millisecond, 1)
-		for i := 0; i < 5; i++ {
+		for range 5 {
 			time.Sleep(20 * time.Millisecond)
 			c.ResetTimer()
 		}

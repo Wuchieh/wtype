@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"reflect"
 	"runtime"
+	"slices"
 	"strings"
 	"time"
 	"unicode/utf8"
@@ -15,6 +16,7 @@ import (
 
 var shared = singleflight.Group{}
 
+// SharedChanResult holds the result delivered by DoSharedChan.
 type SharedChanResult[T any] struct {
 	singleflight.Result
 	Val T
@@ -25,7 +27,7 @@ type SharedChanResult[T any] struct {
 // executed once, and the result will be shared among all callers.
 func DoShared[T any](key string, fn func() (T, error)) (T, error) {
 	var result T
-	do, err, _ := shared.Do(key, func() (interface{}, error) {
+	do, err, _ := shared.Do(key, func() (any, error) {
 		t, err := fn()
 		if err != nil {
 			return nil, err
@@ -51,7 +53,7 @@ func DoShared2[T any](fn func() (T, error)) (T, error) {
 // If multiple calls with the same key are made concurrently, fn will only be
 // executed once, and the result will be delivered through the returned channel.
 func DoSharedChan[T any](key string, fn func() (T, error)) <-chan SharedChanResult[T] {
-	doChan := shared.DoChan(key, func() (interface{}, error) {
+	doChan := shared.DoChan(key, func() (any, error) {
 		t, err := fn()
 		if err != nil {
 			return nil, err
@@ -89,12 +91,12 @@ func DoSharedForget(key string) {
 func StructStringTrim(v any) {
 	rv := reflect.ValueOf(v)
 
-	if rv.Kind() != reflect.Ptr {
+	if rv.Kind() != reflect.Pointer {
 		return
 	}
 
 	rv = rv.Elem()
-	for rv.Kind() == reflect.Ptr &&
+	for rv.Kind() == reflect.Pointer &&
 		!rv.IsNil() {
 		rv = rv.Elem()
 	}
@@ -151,7 +153,7 @@ func trimValue(rv reflect.Value, record map[reflect.Value]struct{}) {
 	switch rv.Kind() {
 	case reflect.Struct:
 		trimStruct(rv, record)
-	case reflect.Ptr:
+	case reflect.Pointer:
 		trimPointer(rv, record)
 	case reflect.Slice, reflect.Array:
 		trimSliceOrArray(rv, record)
@@ -308,8 +310,7 @@ func StackString(skip int, reverse ...bool) string {
 
 	if shouldReverse {
 		// 反向遍歷
-		for i := len(frameList) - 1; i >= 0; i-- {
-			frame := frameList[i]
+		for _, frame := range slices.Backward(frameList) {
 			fmt.Fprintf(&buf, "%s\n\t%s:%d\n", frame.Function, frame.File, frame.Line)
 		}
 	} else {
@@ -382,4 +383,16 @@ func SliceGroupByKey[V any, K comparable](s []V, key func(V) K) map[K][]V {
 		result[k] = list
 	}
 	return result
+}
+
+// UseOptions applies each of the given option functions to option in order,
+// then returns the modified value. It is commonly used to build a value from
+// a set of functional options.
+//
+//	cfg := UseOptions(Config{}, WithTimeout(time.Second), WithRetry(3))
+func UseOptions[T any](option T, options ...func(*T)) T {
+	for _, f := range options {
+		f(&option)
+	}
+	return option
 }

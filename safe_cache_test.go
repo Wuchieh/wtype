@@ -13,7 +13,7 @@ func TestSafeCache(t *testing.T) {
 	s2 := 0
 	wg := sync.WaitGroup{}
 	wg.Add(1000)
-	for i := 0; i < 1000; i++ {
+	for i := range 1000 {
 		go func(index int) {
 			defer wg.Done()
 			s2++

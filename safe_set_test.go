@@ -46,10 +46,10 @@ func TestSafeSet(t *testing.T) {
 
 		// Concurrent Adds
 		wg.Add(workers)
-		for i := 0; i < workers; i++ {
+		for i := range workers {
 			go func(start int) {
 				defer wg.Done()
-				for j := 0; j < itemsPerWorker; j++ {
+				for j := range itemsPerWorker {
 					s.Add(start + j)
 				}
 			}(i * itemsPerWorker)
@@ -62,10 +62,10 @@ func TestSafeSet(t *testing.T) {
 
 		// Concurrent Contains
 		wg.Add(workers)
-		for i := 0; i < workers; i++ {
+		for i := range workers {
 			go func(start int) {
 				defer wg.Done()
-				for j := 0; j < itemsPerWorker; j++ {
+				for j := range itemsPerWorker {
 					if !s.Contains(start + j) {
 						t.Errorf("Item %d not found", start+j)
 					}
@@ -76,10 +76,10 @@ func TestSafeSet(t *testing.T) {
 
 		// Concurrent Remove
 		wg.Add(workers)
-		for i := 0; i < workers; i++ {
+		for i := range workers {
 			go func(start int) {
 				defer wg.Done()
-				for j := 0; j < itemsPerWorker; j++ {
+				for j := range itemsPerWorker {
 					s.Remove(start + j)
 				}
 			}(i * itemsPerWorker)
@@ -93,7 +93,7 @@ func TestSafeSet(t *testing.T) {
 
 	t.Run("RangeConcurrency", func(t *testing.T) {
 		s := wtype.NewSafeSet[int]()
-		for i := 0; i < 100; i++ {
+		for i := range 100 {
 			s.Add(i)
 		}
 
@@ -101,7 +101,7 @@ func TestSafeSet(t *testing.T) {
 		const readers = 10
 		wg.Add(readers)
 
-		for i := 0; i < readers; i++ {
+		for range readers {
 			go func() {
 				defer wg.Done()
 				s.Range(func(item int) bool {

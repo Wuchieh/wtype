@@ -12,7 +12,7 @@ func TestGorm(t *testing.T) {
 
 	t.Log(uintSlice.Value())
 
-	for i := 0; i < 20; i++ {
+	for i := range 20 {
 		uintSlice = append(uintSlice, uint(i))
 	}
 

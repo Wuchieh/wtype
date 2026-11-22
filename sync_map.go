@@ -5,6 +5,7 @@ import (
 	"sync"
 )
 
+// SyncMap is a type-safe wrapper around sync.Map.
 type SyncMap[K comparable, V any] struct {
 	m sync.Map
 }
@@ -31,6 +32,7 @@ func (s *SyncMap[K, V]) MarshalJSON() ([]byte, error) {
 	return json.Marshal(m)
 }
 
+// Load returns the value stored for key and whether the key was found.
 func (s *SyncMap[K, V]) Load(key K) (value V, ok bool) {
 	v, ok := s.m.Load(key)
 	if ok {
@@ -39,52 +41,63 @@ func (s *SyncMap[K, V]) Load(key K) (value V, ok bool) {
 	return value, ok
 }
 
+// Store sets the value for key.
 func (s *SyncMap[K, V]) Store(key K, value V) {
 	s.m.Store(key, value)
 }
 
+// LoadOrStore returns the existing value if present, otherwise it stores and
+// returns value.
 func (s *SyncMap[K, V]) LoadOrStore(key K, value V) (actual V, loaded bool) {
 	v, loaded := s.m.LoadOrStore(key, value)
 	actual = v.(V)
 	return actual, loaded
 }
 
+// LoadAndDelete returns the value stored for key and deletes it.
 func (s *SyncMap[K, V]) LoadAndDelete(key K) (value V, loaded bool) {
 	v, loaded := s.m.LoadAndDelete(key)
 	value = v.(V)
 	return value, loaded
 }
 
+// Delete removes key from the map.
 func (s *SyncMap[K, V]) Delete(key K) {
 	s.m.Delete(key)
 }
 
+// Swap stores value for key and returns the previous value.
 func (s *SyncMap[K, V]) Swap(key K, value V) (previous V, loaded bool) {
 	v, loaded := s.m.Swap(key, value)
 	previous = v.(V)
 	return previous, loaded
 }
 
+// CompareAndSwap swaps old with new when the current value equals old.
 func (s *SyncMap[K, V]) CompareAndSwap(key K, old V, new V) (swapped bool) {
 	swapped = s.m.CompareAndSwap(key, old, new)
 	return swapped
 }
 
+// CompareAndDelete deletes key when its current value equals old.
 func (s *SyncMap[K, V]) CompareAndDelete(key K, old V) (deleted bool) {
 	deleted = s.m.CompareAndDelete(key, old)
 	return deleted
 }
 
+// Range calls f for each entry and stops when f returns false.
 func (s *SyncMap[K, V]) Range(f func(key K, value V) (shouldContinue bool)) {
 	s.m.Range(func(key, value any) bool {
 		return f(key.(K), value.(V))
 	})
 }
 
+// Clear removes all entries from the map.
 func (s *SyncMap[K, V]) Clear() {
 	s.m.Clear()
 }
 
+// NewSyncMap creates a new empty SyncMap.
 func NewSyncMap[K comparable, V any]() *SyncMap[K, V] {
 	return &SyncMap[K, V]{}
 }

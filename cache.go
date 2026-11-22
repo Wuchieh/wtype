@@ -2,6 +2,8 @@ package wtype
 
 import "time"
 
+// Cache is a generic value container that automatically expires after a
+// configurable duration.
 type Cache[T any] struct {
 	data T
 	d    time.Duration
@@ -46,12 +48,13 @@ func (c *Cache[T]) SetDuration(d time.Duration) {
 	c.d = d
 }
 
-// Set sets the data of the cache.
+// Set sets the data of the cache and restarts its timer.
 func (c *Cache[T]) Set(data T) {
 	c.data = data
 	c.setTimer()
 }
 
+// Get returns the data stored in the cache.
 func (c *Cache[T]) Get() T {
 	return c.data
 }
